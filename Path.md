@@ -1108,7 +1108,7 @@ Algorithmic overfitting was controlled by using benchmarks entirely different fr
 | `MEASURED` exit gate | PASS | `PHASE3_COMPLETE` binds all artifacts and authorizes Phase 4. |
 | Structured logs with adjacent comments | PASS | 30 Phase-3 and 80 total statements; 80/80 adjacency and ID matches. |
 | Results hygiene | PASS | Named unsealed run removed; accepted inventory starts at zero Phase-3 files; exactly one current run remains. |
-| Commit/results, ledger, push, remote verification | PENDING TRANSACTION | Implementation `624311d…` and authoritative data `b6b1146…` committed locally; ledger/push verification follows this record. |
+| Commit/results, ledger, push, remote verification | PASS | Implementation `624311d…`, authoritative data `b6b1146…`, and ledger `951fa31…` pushed; local and remote ledger SHAs matched. |
 
 Compliance conclusion: **NO OPEN PHASE-3 IMPLEMENTATION OR SCIENTIFIC COMPLIANCE GAP**. Phase 3 is `MEASURED`, every Phase-3 gate in `WorkPlan.md` passes, and Phase 4 is authorized. The scientific result remains explicitly qualified as `SINGLE_ACTION` and does not support prevalence, superiority, or deployment claims.
 
@@ -1117,7 +1117,20 @@ Compliance conclusion: **NO OPEN PHASE-3 IMPLEMENTATION OR SCIENTIFIC COMPLIANCE
 - Implementation: `624311d9d37710f0e77fcfe8d7a22fbf37fc6d01` — exact planner, freezing, controls, schemas, scripts, orchestration, and tests.
 - Authoritative data: `b6b1146c81ff222a038c65f8542ab5891c92d6d4` — clean deterministic Phase-3 outputs and refreshed upstream audit manifests.
 - Ledger commit: the commit containing this complete Phase-3 record.
-- Push and immediate remote-SHA verification: pending the ledger commit; no remote state is preclaimed.
+- Push target: `origin/main` at `https://github.com/MAVS-RESEARCH/Naturilistic-Validation..git`.
+
+### Phase 3.14 Phase-completion transaction and remote verification
+
+- Final implementation: `624311d9d37710f0e77fcfe8d7a22fbf37fc6d01`.
+- Authoritative data: `b6b1146c81ff222a038c65f8542ab5891c92d6d4`.
+- Complete Phase-3 ledger: `951fa31f707908c1b22b4ba7394aa02c77472e40`.
+- Push range: `08dae5e..951fa31`.
+- Immediate verification: local `HEAD` and remote `refs/heads/main` both resolved to `951fa31f707908c1b22b4ba7394aa02c77472e40`.
+- Repository state immediately after verification: clean and synchronized.
+
+This subsection is the factual follow-up record of the completed transaction. It does not alter scientific artifacts or their hashes.
+
+Phase-completion transaction: **PASS**.
 
 ## Phase 4 record — Independent Audit, Claims, and Seal
 
