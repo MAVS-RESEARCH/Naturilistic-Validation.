@@ -477,7 +477,7 @@ No model was trained, tuned, selected, or benchmarked. Algorithm-development fix
 | Reconstruct case index independently | PASS | `case_index_determinism.json` exact match. |
 | Execute native behavior or deterministic source-faithful replay at both refs | PASS | Nine pre/post checks in `native_replay.json`; exact refs and commands recorded. |
 | Phase benchmark: 8/8 gates, 100% artifact/case linkage, 0 manual labels | PASS | Eligibility metrics meet every threshold. |
-| Commit implementation/results, update ledger, push, verify | IN PROGRESS AT THIS LEDGER COMMIT | Implementation bound at `7f4e790…`; authoritative data commit `f823d7a…`; ledger and remote verification are completed in the follow-up transaction below. |
+| Commit implementation/results, update ledger, push, verify | PASS | Implementation `7f4e790…`, authoritative data `f823d7a…`, and ledger `9d18b11…` were pushed to `origin/main`; local and remote ledger SHAs matched. |
 
 Compliance conclusion: **NO OPEN PHASE-1 IMPLEMENTATION OR SCIENTIFIC COMPLIANCE GAP**. Phase 1 is `ELIGIBLE`. The paired-policy limitation and absence of competing routes are scientific properties of the frozen external evidence, not implementation omissions, and are binding inputs to Phase 2.
 
@@ -498,6 +498,18 @@ The final read-only compliance command checked 32 required Phase-1 paths with 0 
 - Ledger commit: the commit containing this Phase-1 record.
 
 The remote push and SHA verification are recorded in a follow-up ledger subsection after the push succeeds; no remote state is preclaimed here.
+
+### Phase 1.15 Phase-completion transaction and remote verification
+
+- Final implementation bound in the environment: `7f4e7904f8fa01b48020017f1181b1bb70fc926e`.
+- Final authoritative result commit: `f823d7af9663c242f2984fed8b0c21f5164e30e3`.
+- Complete Phase-1 ledger commit: `9d18b11c5c1a0111eb448523b7380b55677994a9`.
+- Push target: `origin/main` at `https://github.com/MAVS-RESEARCH/Naturilistic-Validation..git`.
+- Push range: `426f417..9d18b11`.
+- Immediate remote verification: local `HEAD` and `refs/heads/main` both resolved to `9d18b11c5c1a0111eb448523b7380b55677994a9`.
+- Repository state immediately after verification: clean and synchronized. This subsection is the factual follow-up record of that completed transaction.
+
+Phase-completion transaction: **PASS**.
 
 ## Phase 2 record — Extensional Contract and Touch
 
