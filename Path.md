@@ -23,10 +23,10 @@ Rules for every future update:
 | Attached spec review | Complete for planning | Full structural extraction reviewed: 1 section, 414 top-level paragraphs, 74 tables, 148 tracked insertions, 0 tracked deletions, 0 comment references. |
 | `WorkPlan.md` setup | Complete in current bootstrap change | Four scientific phases, complete file/code/test/benchmark/gate coverage, Polaris-specific hold audit. |
 | `Path.md` setup | Complete in current bootstrap change | Ledger structure and initial factual record created. |
-| Phase 1 scientific implementation | Complete — `ELIGIBLE` | Phase-2 clean regeneration preserved 8/8 gates, 26 source artifacts, and 8 native cases; current report hash `ff4ebb27a8df06c2ec5dd8929c2e846ec25bfaf88f3d1fc42c1a7b4a01395baa` reflects the expanded 50-statement source registry. |
+| Phase 1 scientific implementation | Complete — `ELIGIBLE` | Phase-4 clean regeneration preserved 8/8 gates, 26 source artifacts, and 8 native cases; current report hash `f5363527e79fb969adff79cc336f0e0e27415f6f41ee8bd6fc6fd8254432913b`. |
 | Phase 2 | Complete — `IDENTIFIED` | One exact contract completion, 100% touch coverage, 100% fidelity, seal `ccb9ee43…`; Phase 3 authorized. |
-| Phase 3 | Authorized, not started | Requires use of the sealed Phase-2 contract and derived touch records without mutation. |
-| Phase 4 | Blocked by design | Requires Phase-3 raw inputs; invalid runs may be audited diagnostically only. |
+| Phase 3 | Complete — `MEASURED` | 64/64 freeze cells, 10/10 controls, 8/8 retained cases, completion hash `f2c068bb…`; Phase 4 authorized. |
+| Phase 4 | Complete — `PASS — POSITIVE EXTERNAL` | Independent equality gates pass, 12/12 corruptions detected, 20/20 clauses pass, 0 unindexed scientific files, and seal `08d7a69b…` is clean-reproduction stable. |
 
 ## 3. Bootstrap record — 26 August 2026
 
@@ -1134,18 +1134,281 @@ Phase-completion transaction: **PASS**.
 
 ## Phase 4 record — Independent Audit, Claims, and Seal
 
-Status: **AUTHORIZED — NOT STARTED**
+Status: **COMPLETE — `PASS — POSITIVE EXTERNAL`**
 
-Required future entries:
+Run ID: `external_v01_polaris_pr4992`
 
-- Independent implementation boundary and import scan.
-- Source/case/contract/touch/planner/result recomputation.
-- C1–C10 independent verification and A1–A12 detection results.
-- Claim ledger predicates and exact allowed language.
-- Artifact graph completeness, seal hashes, cleaner refusal, post-seal stability.
-- Clean one-command reproduction.
-- Final verdict, paper outputs, deviations, commits, and push verification.
+Plan conformance: **FOLLOWS** `WorkPlan.md` Phase 4. No scientific requirement was removed, weakened, substituted, or left open. The only implementation correction discovered during stress testing concerned test-interpreter portability; it did not alter scientific data or claim logic and was fixed before the authoritative run.
+
+### Phase 4.1 Frozen boundary and authorization
+
+Phase 4 began only after `PHASE3_COMPLETE` reported `MEASURED` and `phase4_authorized: true`. The independent audit verifies the Phase-3 self-hash and every Phase-3-bound artifact byte hash before recomputation. The authoritative Phase-4 transaction regenerated the named run from a clean accepted-results inventory, so no smoke-test output or prior Phase-4 result survived into the accepted run.
+
+Frozen upstream identities used by the final audit:
+
+| Boundary | Hash / state |
+|---|---|
+| Source manifest | `82498e35c2917fc0d0f3c489e7fddb89680a6eee1a3107e1c6d30ddc2c1d863e` |
+| Preregistration | `e15968f42a911933de98b007ff6524de6a89141cda2f09f26cfcae1dae7896c1` |
+| Contract | `d74b47c792432c1b1001b9b07109ea4dceb9967b9b480b510f635d74c74a5c4b` |
+| Contract seal | `ccb9ee43efa3b0904dd5a9a1bccdf666f8c90360a6ac6f8a325b864939e6edc5` |
+| Phase-3 validation | `9372e6ee22d4e3ffd6147c785f54503d964c1cfba32309fda7bc374d5d7d7653` |
+| Phase-3 completion | `f2c068bb888fca73a0599ae351297895b7b69a39f06a005161805c74b45e7ed6` |
+| Phase-4 implementation | `51d6a0aad412150f53dec9417e7d355d6a6c5921` |
+| Environment | `01fc8308a9a7001386c26e916e805032c25b5acadbd378a1fbced53b9eaea406` |
+
+Upstream mutation check: **PASS**. The authoritative transaction regenerated Phases 1–3 through the same locked pipeline and the final Phase-4 seal binds the source, preregistration, contract, all raw/processed results, controls, implementation, and environment.
+
+### Phase 4.2 Files and code implemented
+
+| WorkPlan file group | Actual implementation | Coding behavior |
+|---|---|---|
+| Schemas | `schemas/audit.schema.json`; `schemas/claim_ledger.schema.json` | Strict Draft 2020-12 objects, closed properties, enumerated verdict/sign taxonomies, structured gates, SHA-256 references, and literal-false scope locks. |
+| Independent audit package | `source_audit.py`, `contract_audit.py`, `touch_audit.py`, `planner_audit.py`, `claims_audit.py` in `src/pc_external_audit/` | Independently written canonicalization, hashing, source/case reconstruction, locator checking, contract reconstruction, partition checks, successor-union touch, exhaustive policy enumeration, result comparison, and claim/report verification. |
+| Production claim module | `src/pc_external/claims.py` | Reads audited core gates, corruption results, and processed rows; derives sign, scope-locked claim predicates, generated text, per-claim hashes, ledger hash, and final verdict. |
+| Phase-4 scripts | `scripts/phase4_independent_audit.py`; `scripts/phase4_corruption_tests.py`; `scripts/phase4_generate_claims.py` | Runs independent recomputation, isolated A1–A12 falsification, mechanical claim/report generation, evidence-derived clause audit, artifact graph construction, final audit, and seal verification. |
+| One-command orchestration | `scripts/run_external_validation.mjs`; `package.json` | `npm run phase4` performs safe named-run cleanup, complete Phase 1–4 regeneration, per-phase tests, audit/seal, read-only recomputation, cleaner-refusal proof, and final authoritative tests. |
+| Tests | `tests/phase4/test_independent_algorithms.py`; `tests/phase4/test_authoritative_phase4.py` | Synthetic independent-algorithm tests plus authoritative seal, row equality, attack, claim-lock, graph, clause, and cleaner-refusal checks. |
+
+No ML or statistical model was trained. Training datasets, learned parameters, training benchmarks, and model-overfitting claims are therefore not applicable. The anti-overfitting analogue is the preregistered/frozen source and contract, independent implementation boundary, exact exhaustive planner, synthetic-only development fixtures, isolated corruptions, clean reproduction, and mechanically constrained claims.
+
+### Phase 4.3 Independent implementation boundary
+
+`phase4_independent_audit.py` parses the five independent modules with Python AST and rejects imports of production authority, claims, contract, controls, freeze, intervention, partition, planner, or touch modules. The independent code uses only its own primitives plus serialized frozen evidence.
+
+Final import-scan evidence:
+
+| Metric | Result |
+|---|---:|
+| Independent modules required/scanned | 5/5 |
+| Forbidden imports | 0 |
+| Findings | 0 |
+| Gate | PASS |
+
+This boundary is stricter than ordinary unit cross-checking: the scientific source/semantics/touch/planner/claim verification logic cannot call the production functions whose outputs it evaluates.
+
+### Phase 4.4 Independent source, semantics, touch, planner, aggregation, and controls
+
+The independent source audit recalculated byte and normalized semantic hashes, reconstructed the native case population directly from the preregistered Java assertion rule, and recalculated each semantic locator quote hash. It then independently rebuilt the history universe `U_H`, evidence inventory `H`, pre/post representation partitions `P_R`, canonical authority chain `Lambda`, and controller observations `omega`.
+
+The independent touch audit used successor-union state differences. `E` compares normalized-evidence hashes, `R` compares within-block history-pair equivalence, and `A` compares canonical authority entries. The independent planner enumerated every stationary policy tree and used worst positive-support successor cost, treating missing actions and cycles as improper/infinite. It did not import the production planner or freeze implementation.
+
+| Audit gate | Checked | Matched | Result |
+|---|---:|---:|---|
+| Frozen source artifacts | 26 | 26 | PASS |
+| Contract reconstruction comparisons | 12 | 12 | PASS |
+| Touch records | 1 | 1 | PASS |
+| Freeze-result cells | 64 | 64 | PASS |
+| Native case/result rows | 8 | 8 | PASS |
+| Mandatory controls C1–C10 | 10 | 10 | PASS |
+
+Additional retention evidence:
+
+- Native case reconstruction: 8 independently reconstructed and 8 recorded.
+- Semantic locators: 18 independently verified and 0 mismatches.
+- Freeze lattice: 64 detailed cells, comprising 32 finite and 32 true `INFINITE` values.
+- Case allocation: 8 result rows, 0 failure cards, exact disjoint result/failure allocation, and no filtered case.
+- Scientific outcome: every native case is `STRUCTURAL_POSITIVE` / `STRUCTURAL_R`, with `K_F000 = 1`, `K_F010 = INFINITE`, and route qualifier `SINGLE_ACTION`.
+- All six mismatch channels for source, contract, touch, planner, aggregation, and controls contain zero mismatches.
+
+Independent equality benchmarks: **100% touch equality** and **100% scientific result equality**.
+
+### Phase 4.5 Deliberate-corruption falsification
+
+Every attack operated on an in-memory isolated copy or synthetic isolated allocation. The accepted source, contract, raw rows, processed rows, and ledger were not mutated.
+
+| Attack | Mutation | Intended fail-closed detector | Result |
+|---|---|---|---|
+| A1 | Flip derived `R` touch | Independent successor-union `audit_touch` equality | DETECTED |
+| A2 | Alter a frozen source byte | Independent SHA-256 byte hash | DETECTED |
+| A3 | Delete action provenance | Nonempty, fact-resolving provenance validator | DETECTED |
+| A4 | Remove a history from a partition block | Independent domain/coverage/disjointness/self-hash validator | DETECTED |
+| A5 | Add an `R`-touch action to `F010` | Independently derived exact disjoint-touch mask | DETECTED |
+| A6 | Remove the admissible action from `F000` | Independently derived exact disjoint-touch mask | DETECTED |
+| A7 | Change the initial state in a condition instance | Same-instance base hash | DETECTED |
+| A8 | Inject evaluator truth into `omega` | Recursive controller-information taint search | DETECTED |
+| A9 | Change intervention unit cost | Action/global preregistered cost equality | DETECTED |
+| A10 | Drop an isolated zero-gap row | Expected-case identity/bijection check | DETECTED |
+| A11 | Add numeric sentinel `999999` to infinity | Exact extended-real object-key contract | DETECTED |
+| A12 | Hand-strengthen generated claim text | Independent claim and ledger hash validator | DETECTED |
+
+Corruption benchmark: **12/12 detected**. Corruption report hash: `d590bd394c247e203181601516d873ad65aad0418a8d470ef5171c7dd3dd30c5`.
+
+### Phase 4.6 Mechanical claims and paper-facing outputs
+
+The production claim generator separates external operational validity from result sign. It locks `prevalence`, `superiority`, and `deployment_readiness` to literal `false`. Every authorized scientific sentence carries a claim ID, evaluated predicate, evidence paths, prohibited dependencies, and a self-hash. The entire ledger has a separate hash. Missing, unknown, edited, or hash-inconsistent claim lines fail verification.
+
+Claim ledger hash: `cbd57c09562dbc3a451fba0f5cc0ff9340f327bc8fee5160265b8288a4cdf3e2`.
+
+Authorized language:
+
+- `CLM-EXT-001`: The Apache Polaris OPA certificate-target experiment is a valid external operational measurement under the preregistered finite contract.
+- `CLM-RESULT-001`: In this independently engineered Apache Polaris instance, unrestricted closure costs one unit intervention and R-frozen closure is unreachable for all eight source-selected certificate cases.
+- `CLM-QUAL-001`: The result is qualified as `SINGLE_ACTION` because the frozen source establishes one admitted historical repair action and no competing repair route.
+- `CLM-NONCLAIM-001`: This experiment does not estimate how prevalent positive resource dependence is.
+- `CLM-NONCLAIM-002`: This experiment does not establish superiority over another authorization architecture.
+- `CLM-NONCLAIM-003`: This experiment does not establish deployment readiness or universal correctness.
+
+All 6/6 claim records and both generated reports passed the independent claims audit. The result is positive for this independently engineered instance only; it is not a prevalence, superiority, or deployment-readiness result.
+
+Paper-facing outputs created:
+
+- `reports/CLAIMS.md`
+- `reports/REPRODUCE.md`
+- `reports/external_case_report.md`
+- `reports/failure_cards.jsonl`
+- `reports/audited_paper_table.csv`
+- `reports/claim_ledger.json`
+- refreshed `reports/console_log_registry.json`
+
+### Phase 4.7 Artifact graph, clause audit, and final seal
+
+The artifact graph creates file nodes plus semantic-fact, freeze-result, and paper-value entities. For each paper row it records the chain: paper value → case row and F000/F010 result → raw result store → planner certificate → condition manifest → touch record → contract → semantic facts → frozen source. Both adjacency directions are traversed.
+
+| Provenance/seal metric | Result |
+|---|---:|
+| Scientific files discovered | 215 |
+| Scientific files indexed | 215 |
+| Unindexed scientific files | 0 |
+| Paper-facing values traced | 8 |
+| Backward traversal | PASS |
+| Forward traversal | PASS |
+| Artifact graph hash | `52a2af3f8d2c05c1d18c0bd4a2475eb3e5af7b7c12057f9cfee1e70056a08a0a` |
+
+The graph explicitly excludes only its self-referential final metadata (`artifact_graph.json`, `audit.json`, `clause_audit.json`, and `SEALED`) from the scientific-file set; the final seal separately hashes all four final metadata objects. The final seal binds 218 artifacts in total.
+
+The evidence-derived specification audit reports 20/20 clauses passed. Clause-audit hash: `7dca0826ff62c8b31f7a4c43953ce91012db9274cc50016e7652fa0b9fdc96a8`.
+
+Final audit:
+
+- 9/9 component gates pass.
+- 0 findings.
+- 0 supported-claim findings.
+- Audit hash: `e8ec0f36d12ecd9cb67321dcb5fbfc632def18d51bb5952905dc1d40ddc70210`.
+- Verdict: **`PASS — POSITIVE EXTERNAL`**.
+
+Final seal hash: `08d7a69b059213b08a6d7f2ab9b4dd1ff970e3f04e827906677115cc77e22d99`.
+
+### Phase 4.8 Post-seal immutability and clean one-command reproduction
+
+The authoritative orchestrator performed, after writing `SEALED`:
+
+1. a complete independent audit in `--read-only` mode;
+2. exact recomputed `independent_touch.parquet` and `independent_results.parquet` content comparison;
+3. final seal, ledger, reports, and graph verification;
+4. an expected-failure cleaner call; and
+5. the complete Phase-4 authoritative test suite.
+
+An additional explicit post-seal hash inventory recomputed all 218 sealed artifact hashes before and after read-only audit, seal verification, and cleaner refusal. Changed artifacts: **0/218**.
+
+Clean reproduction used a new checkout at `C:\p4u`, exact implementation commit `51d6a0aad412150f53dec9417e7d355d6a6c5921`, and the single command `npm run phase4` with the same locked Python interpreter made available through `PC_PYTHON`. It began by deleting only the named unsealed prior run, regenerated Phases 1–4, and completed with 88/88 final tests. The clean-checkout seal and authoritative seal are byte-identical:
+
+`08d7a69b059213b08a6d7f2ab9b4dd1ff970e3f04e827906677115cc77e22d99`
+
+Clean one-command reproduction: **PASS**.
+
+### Phase 4.9 Stress tests, failed attempts, and corrections retained
+
+The following unsuccessful or superseded checks are retained rather than rewritten as passes:
+
+1. The first independent smoke run matched values and masks but reported only 40/64 exact planner rows because the independent output alphabetically sorted multi-resource freeze labels (`A,E`) while the preregistered scientific column order is `E,R,A`. The independent lattice was corrected to preserve preregistered tuple order. The rerun matched 64/64 exact rows. No authoritative result existed at this point.
+2. A pre-authoritative coverage run without Phase-4 artifacts exercised only development tests and reported 76.74%, below the 85% gate. This was an invalid proxy for the final suite because authoritative recomputation tests were correctly skipped. The actual Phase-4 run exercised those tests and reported 86.91% branch-aware coverage.
+3. A long-path temporary checkout failed during Git checkout under the Windows path-length limit. It produced no accepted result.
+4. The first short-path isolated run reached the final suite after successful audit, corruptions, claims, graph, seal, read-only audit, seal verification, and cleaner refusal, but one test invoked `ROOT/.venv` instead of the active locked interpreter. The test was corrected to use `sys.executable` in commit `51d6a0a…`. This was a test portability defect, not a scientific mismatch. The superseded run was not accepted.
+5. The second clean short-path run completed 88/88 tests and produced the same final seal as the authoritative repository.
+
+Final stress-test evidence:
+
+| Check | Result |
+|---|---|
+| Ruff formatting/check and Python compilation | PASS |
+| Development suite | 74 passed; authoritative tests correctly skipped before artifacts existed |
+| Clean final Phase-4 suite | 88 passed, 0 skipped, 0 failed |
+| Branch-aware coverage | 86.91% ≥ 85% |
+| Touch equality | 1/1 |
+| Planner equality | 64/64 |
+| Case equality | 8/8 |
+| Controls | 10/10 |
+| Corruptions | 12/12 |
+| Clause audit | 20/20 |
+| Graph index | 215/215, 0 unindexed |
+| Post-seal stability | 218/218 unchanged |
+| Clean reproduction | Exact seal match |
+
+### Phase 4.10 Structured `console.log` registry
+
+The final registry contains 110 structured `console.log` statements overall. Phase 4 adds 30. All 110 statements have immediately adjacent identifying comments and matching event IDs. Registry hash: `d2ddba9acc0140589e1dea5360ac094565e897a5eed7c5f7bfd141aaa4b8421a`.
+
+| File | Comment line | `console.log` line | Identifying comment |
+|---|---:|---:|---|
+| `scripts/phase4_corruption_tests.py` | 128 | 129 | `# console.log: external.phase4.corruptions.start` |
+| `scripts/phase4_corruption_tests.py` | 131 | 132 | `# console.log: external.phase4.corruptions.attack_touch_source_provenance_partition` |
+| `scripts/phase4_corruption_tests.py` | 194 | 195 | `# console.log: external.phase4.corruptions.attack_masks_state_taint_cost` |
+| `scripts/phase4_corruption_tests.py` | 286 | 287 | `# console.log: external.phase4.corruptions.attack_retention_infinity_claims` |
+| `scripts/phase4_corruption_tests.py` | 369 | 370 | `# console.log: external.phase4.corruptions.complete` |
+| `scripts/phase4_generate_claims.py` | 273 | 274 | `# console.log: external.phase4.claims.start` |
+| `scripts/phase4_generate_claims.py` | 276 | 277 | `# console.log: external.phase4.claims.verify_seal_read_only` |
+| `scripts/phase4_generate_claims.py` | 279 | 280 | `# console.log: external.phase4.claims.verify_seal_complete` |
+| `scripts/phase4_generate_claims.py` | 292 | 293 | `# console.log: external.phase4.claims.derive_ledger` |
+| `scripts/phase4_generate_claims.py` | 302 | 303 | `# console.log: external.phase4.claims.generate_reports` |
+| `scripts/phase4_generate_claims.py` | 405 | 406 | `# console.log: external.phase4.claims.build_clause_audit_and_artifact_graph` |
+| `scripts/phase4_generate_claims.py` | 464 | 465 | `# console.log: external.phase4.claims.finalize_audit` |
+| `scripts/phase4_generate_claims.py` | 540 | 541 | `# console.log: external.phase4.claims.seal_all_artifacts` |
+| `scripts/phase4_generate_claims.py` | 580 | 581 | `# console.log: external.phase4.claims.complete` |
+| `scripts/phase4_independent_audit.py` | 345 | 346 | `# console.log: external.phase4.independent_audit.start` |
+| `scripts/phase4_independent_audit.py` | 352 | 353 | `# console.log: external.phase4.independent_audit.verify_phase3_and_import_boundary` |
+| `scripts/phase4_independent_audit.py` | 362 | 363 | `# console.log: external.phase4.independent_audit.read_only_compare` |
+| `scripts/phase4_independent_audit.py` | 375 | 376 | `# console.log: external.phase4.independent_audit.read_only_complete` |
+| `scripts/phase4_independent_audit.py` | 379 | 380 | `# console.log: external.phase4.independent_audit.recompute_source_contract_touch` |
+| `scripts/phase4_independent_audit.py` | 385 | 386 | `# console.log: external.phase4.independent_audit.recompute_planner_aggregation_controls` |
+| `scripts/phase4_independent_audit.py` | 406 | 407 | `# console.log: external.phase4.independent_audit.complete` |
+| `scripts/run_external_validation.mjs` | 182 | 183 | `// console.log: external.phase4.orchestrator.start` |
+| `scripts/run_external_validation.mjs` | 185 | 186 | `// console.log: external.phase4.step17.independent_audit` |
+| `scripts/run_external_validation.mjs` | 189 | 190 | `// console.log: external.phase4.step18.corruption_tests` |
+| `scripts/run_external_validation.mjs` | 193 | 194 | `// console.log: external.phase4.step19.generate_claims_and_seal` |
+| `scripts/run_external_validation.mjs` | 197 | 198 | `// console.log: external.phase4.step20.read_only_independent_recomputation` |
+| `scripts/run_external_validation.mjs` | 201 | 202 | `// console.log: external.phase4.step21.verify_final_seal_read_only` |
+| `scripts/run_external_validation.mjs` | 205 | 206 | `// console.log: external.phase4.step22.prove_cleaner_refusal` |
+| `scripts/run_external_validation.mjs` | 209 | 210 | `// console.log: external.phase4.step23.run_authoritative_tests` |
+| `scripts/run_external_validation.mjs` | 217 | 218 | `// console.log: external.phase4.orchestrator.complete` |
+
+### Phase 4.11 Clause-by-clause WorkPlan compliance audit
+
+| WorkPlan Phase-4 requirement | Compliance | Evidence |
+|---|---|---|
+| Independently recompute from frozen raw inputs | PASS | Phase-3 hash verification followed by independent source, contract, touch, planner, aggregation, and control audits. |
+| Five independent modules and import guards | PASS | 5/5 AST-scanned; 0 forbidden imports. |
+| Production claim module reads audited gates/results | PASS | `claims.py` inputs are independent core, corruption report, and processed case rows only. |
+| Required schemas and three scripts | PASS | Both schemas and all three scripts created, linted, executed, and tested. |
+| Independent source rehash, cases, locators | PASS | 26/26 source artifacts, 8/8 cases, 18/18 locators. |
+| Independently rebuild `U_H`, `H`, `P_R`, `Lambda`, `omega`, touch | PASS | 12/12 contract comparisons and 1/1 touch record. |
+| Second exact planner and identified results | PASS | Exhaustive policy enumeration; 64/64 detailed rows and 8/8 case rows. |
+| Complete case/failure allocation | PASS | Exact 8-case bijection; zero failure cards; finite and infinite cells retained. |
+| Independently verify C1–C10 | PASS | Exact control ID set, nonempty invariant/evidence fields, 10/10 pass. |
+| A1–A12 fail closed | PASS | 12 distinct attacks, 12 detected by intended layers. |
+| Mechanical claim ledger and false locks | PASS | 6/6 hash-bound records; prevalence/superiority/deployment all false. |
+| Complete backward/forward artifact graph | PASS | 215/215 scientific files, 0 unindexed, both traversals pass. |
+| Required reports and paper table | PASS | All requested reports, failure-card channel, claim ledger, and audited CSV exist. |
+| Final seal binds all required identities | PASS | 218 artifact hashes plus source, preregistration, contract, Phase 3, audit, claims, implementation, environment, and graph hashes. |
+| Cleaner refusal and read-only stability | PASS | Expected refusal plus 0/218 post-seal hash changes. |
+| Clean one-command reproduction | PASS | Fresh `C:\p4u` checkout, `npm run phase4`, 88/88 tests, exact seal match. |
+| 100% touch/result equality | PASS | 1/1 and 64/64; case rows 8/8. |
+| 10/10 controls and 12/12 corruptions | PASS | Machine-readable final audit gates. |
+| 0 supported-claim findings and 0 unindexed files | PASS | Final audit and graph. |
+| Retain null/infinite outcomes | PASS | A10 explicitly falsifies zero filtering; 32 infinite cells remain sentinel-free. |
+| Final verdict taxonomy and constrained language | PASS | `PASS — POSITIVE EXTERNAL`; `SINGLE_ACTION`; all three prohibited generalizations explicitly denied. |
+| Phase completion transaction | IN PROGRESS AT THIS RECORD | Implementation commits and sealed-data commit exist; ledger commit, push, and remote verification follow immediately below. |
+
+Compliance conclusion: **NO OPEN PHASE-4 IMPLEMENTATION, SCIENTIFIC, CLAIM, PROVENANCE, REPRODUCTION, OR LOGGING GAP**. Phase 4 satisfies its WorkPlan scope and benchmarks exactly. The final result remains scoped to one independently engineered Apache Polaris instance and the source-selected eight certificate cases.
+
+### Phase 4.12 Commit structure before remote transaction
+
+- Core implementation: `65def9796eeacfc9414d7f42eb342f1a7f308383` — schemas, five independent modules, claim module, scripts, orchestrator, and tests.
+- Portability correction / final implementation identity: `51d6a0aad412150f53dec9417e7d355d6a6c5921` — authoritative cleaner-refusal test uses the active locked interpreter.
+- Sealed authoritative data: `2e41bc4b7ed9cf03d008dda895afdde134b971ba` — complete Phase-4 audit, reports, graph, and final seal.
+- Complete Phase-4 ledger: the commit containing this record.
+- Push target: `origin/main` at `https://github.com/MAVS-RESEARCH/Naturilistic-Validation..git`.
 
 ## 5. Next authorized action
 
-After the Phase-3 commits are pushed and remotely verified, the next authorized scientific action is Phase 4 only: independently recompute touch and every freeze result, execute the A1-A12 corruption suite, enforce the claim gate and implementation-import boundary, build the complete artifact graph, seal the run, and prove post-seal clean reproduction. Phase 4 may not mutate any Phase-1, Phase-2, or Phase-3 scientific artifact.
+All four WorkPlan phases are complete. No further scientific implementation is authorized by the current WorkPlan. Any new external system, route expansion, competing-action evidence, cost contract, claim, or publication transformation requires a separately scoped and preregistered follow-on plan; it must not mutate the sealed run.
