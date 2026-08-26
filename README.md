@@ -25,4 +25,3 @@ The orchestrator stops at the first failed gate. It does not derive E/R/A touch 
 ```
 
 Scientific outputs are written under `results/external_validation_v01/<run_id>/`. A named-run cleaner may remove only an unsealed run located strictly beneath that results root.
-

@@ -35,4 +35,3 @@
     "eligibility_report_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
   }
 }
-
