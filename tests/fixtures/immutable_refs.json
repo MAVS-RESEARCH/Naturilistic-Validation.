@@ -1,0 +1,14 @@
+{
+  "valid": [
+    "68cba2027e97683cfe62502cc2982c93e74e53e6",
+    "d0a8dff401e30cab1df3ca6d0e133816e80e9c10"
+  ],
+  "invalid": [
+    "main",
+    "refs/heads/main",
+    "68cba20",
+    "68CBA2027E97683CFE62502CC2982C93E74E53E6",
+    ""
+  ]
+}
+

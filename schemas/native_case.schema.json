@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mavs-research.example/schemas/native_case.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["case_id", "source_case_ids", "source_artifact_id", "source_locator", "origin", "initial_state_id", "target_class", "target_predicate", "expected_realm", "relevance_proof", "route_class", "evaluator_truth_ref"],
+  "properties": {
+    "case_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$"},
+    "source_case_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+    "source_artifact_id": {"type": "string"},
+    "source_locator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "method", "method_line", "assertion_line"],
+      "properties": {
+        "path": {"type": "string"},
+        "method": {"type": "string"},
+        "method_line": {"type": "integer", "minimum": 1},
+        "assertion_line": {"type": "integer", "minimum": 1}
+      }
+    },
+    "origin": {"const": "UPSTREAM_NATIVE"},
+    "initial_state_id": {"type": "string"},
+    "target_class": {"const": "AUTHORIZATION_INPUT_CERTIFICATE"},
+    "target_predicate": {"type": "string"},
+    "expected_realm": {"type": "string", "minLength": 1},
+    "relevance_proof": {"type": "string", "minLength": 1},
+    "route_class": {"enum": ["UNCLASSIFIED_PHASE2", "NONDEGENERATE", "R-ONLY_ROUTE", "SINGLE_ACTION", "NO_REPAIR_SPACE"]},
+    "evaluator_truth_ref": {"type": ["string", "null"]}
+  }
+}

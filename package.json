@@ -1,0 +1,15 @@
+{
+  "name": "pc-external-validation",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Authoritative orchestration for Perceptive Closure external validation",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "phase1": "node scripts/run_external_validation.mjs --run-id external_v01_polaris_pr4992",
+    "test": "python -m pytest"
+  }
+}
+

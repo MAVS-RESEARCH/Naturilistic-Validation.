@@ -1,0 +1,19 @@
+phase1_sealed: true
+phase1:
+  require_exact_immutable_refs: true
+  require_two_source_fetches: true
+  require_cache_path_invariance: true
+  require_deterministic_case_index: true
+  require_zero_pc_generated_primary_cases: true
+  require_zero_manual_resource_labels: true
+phase3_reserved_controls:
+  - C1_REPRESENTATION_VALUE_RENAME
+  - C2_CASE_FIELD_ORDER_PERMUTATION
+  - C3_IRRELEVANT_METADATA_PERTURBATION
+  - C4_EMPTY_TOUCH_NOOP
+  - C5_EXACT_FREEZE_AUDIT
+  - C6_ATOMICITY_CHALLENGE
+  - C7_TARGET_ISOLATION
+  - C8_PROVENANCE_DELETION
+  - C9_HIDDEN_TRUTH_TAINT
+  - C10_COMPLETION_PERMUTATION

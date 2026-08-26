@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mavs-research.example/schemas/preregistration.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["run_id", "primary_system_id", "pre_repair_ref", "post_repair_ref", "historical_change_id", "native_case_rule", "resource_question", "freeze_sets", "primary_cost", "secondary_costs", "completion_policy", "positive_claim_rule", "route_degeneracy_rule", "nonclaims", "stop_conditions", "source_manifest_hash", "config_hashes", "sealed_before_phase2", "preregistration_hash"],
+  "properties": {
+    "run_id": {"type": "string"},
+    "primary_system_id": {"type": "string"},
+    "pre_repair_ref": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "post_repair_ref": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "historical_change_id": {"type": "string"},
+    "native_case_rule": {"type": "object"},
+    "resource_question": {"type": "string"},
+    "freeze_sets": {"type": "array", "minItems": 8, "maxItems": 8, "uniqueItems": true},
+    "primary_cost": {"type": "object"},
+    "secondary_costs": {"type": "array"},
+    "completion_policy": {"type": "object"},
+    "positive_claim_rule": {"type": "string"},
+    "route_degeneracy_rule": {"type": "object"},
+    "nonclaims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prevalence", "superiority", "deployment_readiness", "universal_zero_error"],
+      "properties": {
+        "prevalence": {"const": false},
+        "superiority": {"const": false},
+        "deployment_readiness": {"const": false},
+        "universal_zero_error": {"const": false}
+      }
+    },
+    "stop_conditions": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+    "source_manifest_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "config_hashes": {"type": "object", "minProperties": 4, "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+    "sealed_before_phase2": {"const": true},
+    "preregistration_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}
+

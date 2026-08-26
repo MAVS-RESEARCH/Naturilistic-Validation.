@@ -1,0 +1,10 @@
+{
+  "corruptions": [
+    "duplicate_artifact_id",
+    "duplicate_phase_source_path",
+    "byte_hash_mismatch",
+    "semantic_hash_mismatch",
+    "manifest_hash_mismatch"
+  ]
+}
+
