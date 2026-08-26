@@ -56,6 +56,7 @@ def test_authoritative_determinism_and_replay_reports_pass() -> None:
     assert source["pass_count"] == 2
     assert source["artifact_hashes_equal"] is True
     assert source["history_fetches_equal"] is True
+    assert source["independent_cache_paths_distinct"] is True
     assert cases["exact_match"] is True
     assert replay["passed"] is True
     assert all(replay["checks"].values())

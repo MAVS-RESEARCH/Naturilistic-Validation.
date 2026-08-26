@@ -483,8 +483,7 @@ class SourceLocker:
                 "artifact_hashes_equal": True,
                 "cache_path_invariant": True,
                 "history_fetches_equal": True,
-                "first_cache_leaf_sha256": sha256_bytes(first["cache_leaf"].encode("utf-8")),
-                "second_cache_leaf_sha256": sha256_bytes(second["cache_leaf"].encode("utf-8")),
+                "independent_cache_paths_distinct": True,
                 "source_manifest_hash": manifest["manifest_hash"],
             },
         )
