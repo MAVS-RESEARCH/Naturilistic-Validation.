@@ -1397,7 +1397,7 @@ The final registry contains 110 structured `console.log` statements overall. Pha
 | 0 supported-claim findings and 0 unindexed files | PASS | Final audit and graph. |
 | Retain null/infinite outcomes | PASS | A10 explicitly falsifies zero filtering; 32 infinite cells remain sentinel-free. |
 | Final verdict taxonomy and constrained language | PASS | `PASS — POSITIVE EXTERNAL`; `SINGLE_ACTION`; all three prohibited generalizations explicitly denied. |
-| Phase completion transaction | IN PROGRESS AT THIS RECORD | Implementation commits and sealed-data commit exist; ledger commit, push, and remote verification follow immediately below. |
+| Phase completion transaction | PASS | Implementation, sealed data, and complete ledger commits were pushed; local and remote `main` matched at `2a678021828007e8500568e64b764440d4f66177`. |
 
 Compliance conclusion: **NO OPEN PHASE-4 IMPLEMENTATION, SCIENTIFIC, CLAIM, PROVENANCE, REPRODUCTION, OR LOGGING GAP**. Phase 4 satisfies its WorkPlan scope and benchmarks exactly. The final result remains scoped to one independently engineered Apache Polaris instance and the source-selected eight certificate cases.
 
@@ -1408,6 +1408,20 @@ Compliance conclusion: **NO OPEN PHASE-4 IMPLEMENTATION, SCIENTIFIC, CLAIM, PROV
 - Sealed authoritative data: `2e41bc4b7ed9cf03d008dda895afdde134b971ba` — complete Phase-4 audit, reports, graph, and final seal.
 - Complete Phase-4 ledger: the commit containing this record.
 - Push target: `origin/main` at `https://github.com/MAVS-RESEARCH/Naturilistic-Validation..git`.
+
+### Phase 4.13 Phase-completion transaction and remote verification
+
+- Core implementation: `65def9796eeacfc9414d7f42eb342f1a7f308383`.
+- Final implementation identity after portability correction: `51d6a0aad412150f53dec9417e7d355d6a6c5921`.
+- Sealed authoritative data: `2e41bc4b7ed9cf03d008dda895afdde134b971ba`.
+- Complete Phase-4 ledger: `2a678021828007e8500568e64b764440d4f66177`.
+- Push range: `d5b9199..2a67802`.
+- Immediate verification: local `HEAD` and remote `refs/heads/main` both resolved to `2a678021828007e8500568e64b764440d4f66177`.
+- Repository state immediately after verification: clean and synchronized.
+
+This subsection is the factual follow-up record of the completed transaction. It does not alter any sealed scientific artifact or hash.
+
+Phase-completion transaction: **PASS**.
 
 ## 5. Next authorized action
 
