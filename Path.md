@@ -23,9 +23,9 @@ Rules for every future update:
 | Attached spec review | Complete for planning | Full structural extraction reviewed: 1 section, 414 top-level paragraphs, 74 tables, 148 tracked insertions, 0 tracked deletions, 0 comment references. |
 | `WorkPlan.md` setup | Complete in current bootstrap change | Four scientific phases, complete file/code/test/benchmark/gate coverage, Polaris-specific hold audit. |
 | `Path.md` setup | Complete in current bootstrap change | Ledger structure and initial factual record created. |
-| Phase 1 scientific implementation | Complete — `ELIGIBLE` | Authoritative run `external_v01_polaris_pr4992`; 8/8 gates passed; 26 source artifacts; 8 native cases; report hash `ec183d55f54367b5fd694de21074e64d2da6b973e9b1e40ee0737fc7043f552c`. |
-| Phase 2 | Authorized, not started | Phase 1 permits contract recovery only; route degeneracy and terminal-decision identification remain explicit Phase-2 obligations. |
-| Phase 3 | Blocked by design | Requires sealed Phase-2 identified/partially identified contract. |
+| Phase 1 scientific implementation | Complete — `ELIGIBLE` | Phase-2 clean regeneration preserved 8/8 gates, 26 source artifacts, and 8 native cases; current report hash `ff4ebb27a8df06c2ec5dd8929c2e846ec25bfaf88f3d1fc42c1a7b4a01395baa` reflects the expanded 50-statement source registry. |
+| Phase 2 | Complete — `IDENTIFIED` | One exact contract completion, 100% touch coverage, 100% fidelity, seal `ccb9ee43…`; Phase 3 authorized. |
+| Phase 3 | Authorized, not started | Requires use of the sealed Phase-2 contract and derived touch records without mutation. |
 | Phase 4 | Blocked by design | Requires Phase-3 raw inputs; invalid runs may be audited diagnostically only. |
 
 ## 3. Bootstrap record — 26 August 2026
@@ -513,21 +513,290 @@ Phase-completion transaction: **PASS**.
 
 ## Phase 2 record — Extensional Contract and Touch
 
-Status: **AUTHORIZED — NOT STARTED**
+Status: **COMPLETE — IDENTIFIED**
 
-Required future entries:
+Authoritative run ID: `external_v01_polaris_pr4992`
 
-- Contract/completion IDs and hashes.
-- `U_H`, `H`, `P_R`, `Lambda`, `omega`, terminal, target, `Q`, `Succ+`, and cost construction.
-- Every file/module/schema created.
-- Fidelity outcomes, touch completeness, route classification.
-- Unit/property/metamorphic tests and exact completion count.
-- Exit state and seal evidence.
-- Deviations, failures, commits, and push verification.
+Execution date: 26 August 2026
+
+Plan conformance: **FOLLOWS** `WorkPlan.md` Phase 2. Phase 2 consumed only the regenerated, hash-verified Phase-1 evidence. It did not import or execute a planner, run any freeze mask, inspect `K_Pi` or `Delta_R`, create a case result, or generate a claim.
+
+### Phase 2.1 Planned versus actual scope
+
+The implementation used the required two-pass architecture. Pass A produced 18 immutable semantic facts and an eight-history common universe without E/R/A labels. Pass B validated every fact and locator before compiling the complete `M_ext`, exact completion family, route classification, fidelity report, provenance graph, and mechanically derived touch record. The phase ended in `IDENTIFIED` because the declared certificate target has one valid source-grounded contract and no completion dimension.
+
+The unresolved paired realm-sensitive allow/deny behavior was retained as one `INCOMPLETE` semantic fact and an explicit limitation. It was not converted into an author-prior completion because terminal allow/deny is outside the Phase-1-sealed `AUTHORIZATION_INPUT_CERTIFICATE` target. The limitation therefore narrows the claim rather than creating an invented decision contract.
+
+Phase-2 regeneration also refreshed four Phase-1 run files. Phase-1 gates and source/preregistration hashes remained unchanged; its report hash changed to `ff4ebb27…` only because the source-wide console registry expanded from 24 to 50 statements and the environment lock now binds the Phase-2 implementation. This is an audit-surface update, not a changed eligibility conclusion.
+
+### Phase 2.2 Files created or updated
+
+Schemas:
+
+- `schemas/semantic_fact.schema.json`
+- `schemas/extensional_contract.schema.json`
+- `schemas/state.schema.json`
+- `schemas/intervention.schema.json`
+- `schemas/touch_record.schema.json`
+- `schemas/completion_set.schema.json`
+
+Production modules:
+
+- `src/pc_external/contract.py`
+- `src/pc_external/partitions.py`
+- `src/pc_external/authority.py`
+- `src/pc_external/interventions.py`
+- `src/pc_external/touch.py`
+- `src/pc_external/completions.py`
+- `src/pc_external/hashing.py` updated with deterministic atomic JSONL output.
+
+Scripts and orchestration:
+
+- `scripts/phase2_extract_contract.py`
+- `scripts/phase2_validate_contract.py`
+- `scripts/phase2_extract_touch.py`
+- `scripts/phase2_seal.py`
+- `scripts/run_external_validation.mjs` updated with phase-aware execution through Phase 2.
+
+Dependencies and operator interface:
+
+- `pyproject.toml` and `uv.lock` add pinned `pyarrow 20.0.0` support for real Parquet output.
+- `package.json` adds explicit `phase1` and `phase2` commands.
+- `README.md` documents Phase-2 execution and the planner prohibition.
+
+Fixtures and tests:
+
+- `tests/fixtures/phase2_touch_cases.json`
+- `tests/fixtures/phase2_partitions.json`
+- `tests/fixtures/phase2_completions.json`
+- `tests/fixtures/phase2_taint.json`
+- `tests/fixtures/phase2_provenance.json`
+- `tests/unit/test_partitions.py`
+- `tests/phase2/test_authority.py`
+- `tests/phase2/test_touch.py`
+- `tests/phase2/test_completions.py`
+- `tests/phase2/test_contract.py`
+- `tests/phase2/test_authoritative_phase2.py`
+- `tests/metamorphic/test_phase2_permutations.py`
+
+Authoritative contract outputs under `results/external_validation_v01/external_v01_polaris_pr4992/contract/`:
+
+- `semantic_facts.jsonl`
+- `history_universe.json`
+- `extensional_contract.json`
+- `completion_set.json`
+- `contract_provenance.json`
+- `touch_records.parquet`
+- `touch_summary.json`
+- `route_classification.json`
+- `fidelity_report.json`
+- `CONTRACT_SEALED`
+
+There are 50 generated files across `external_source/` and the single current run, totaling 401,355 bytes. The contract directory contains exactly the ten Phase-2 outputs above. No older run directory is present.
+
+### Phase 2.3 Pass A — semantic facts and common history universe
+
+Pass A generated 18 facts: 15 `DIRECT`, 2 `DERIVED`, and 1 `INCOMPLETE`. Every fact has a content-derived ID, subject, structured predicate/value, frozen artifact ID, exact path and line range, quote SHA-256, evidence type, derivation rule where required, conflict list, primary-inclusion flag, and allowed-influence class. All 18 locators resolve and all quote hashes match current frozen snapshot bytes.
+
+The ten non-case predicates cover realm security-domain semantics, pre-repair realm absence, post-repair schema/interface/emission, factory injection, unchanged application-scoped OPA authority, default-deny policy behavior, lack of a pre-repair per-realm policy route, and the incomplete paired decision case. Eight additional facts bind each native case to its exact expected-realm assertion.
+
+`U_H` uses `EXPLICIT_FINITE` mode. It contains one content-derived history per frozen native case, for eight unique histories total. The validity predicate is: a history is one frozen `UPSTREAM_NATIVE` case with a validated realm assertion. Canonical enumeration is ascending history ID. All states, partitions, targets, and actions use this same ordered domain.
+
+History-universe hash: `7cdb3fd9fdd76509d0204e1c3932d242e30fb2572e108a80544d119ac8f72692`.
+
+### Phase 2.4 Compiled `M_ext`
+
+| Component | Construction and evidence |
+|---|---|
+| `S` | Two states: pre-repair context without realm certificate and post-repair context with realm certificate. |
+| `s0` | The pre-repair state. |
+| `U_H` | Eight unique source-valid histories, one per frozen native case, common to both states. |
+| `H` | Separates 26 existing artifacts from 24 admitted artifacts; the two Phase-1 `EXCLUDED` route artifacts remain visible as existing but not admitted. Stable artifact identity normalization is identical in both states. |
+| `P_R` | Pre state has one eight-member equivalence block because realm is absent. Post state has eight blocks keyed during evaluation by expected realm; raw keys are discarded from output. |
+| `Lambda` | Canonical `SOURCE`, `FIELD`, `PREDICATE`, `ATTESTATION`, and `CHECK` entries. The same authority hash occurs in both states because realm-field existence is not confused with permission to consume presented OPA input. |
+| `omega` | Pre exposes field name `request_id`; post exposes field names `request_id` and `realm`. It contains no expected-realm values or evaluator truth. |
+| `Q` | One atomic action, `action:historical_context_realm_injection`, with preconditions, public effect, three provenance facts, and no stored touch label. |
+| `Succ+` | The historical action has one positive-support successor: the post-repair state. |
+| `Terminal` | For each of eight cases, the realm certificate predicate is unsatisfied pre-repair and satisfied post-repair. |
+| `A_Pi` | Each case retains the Phase-1 target class, exact expected realm, and evaluator-truth source reference. |
+| `c` | Unit primary cost `1`; no native secondary cost was source-grounded. |
+
+Key hashes:
+
+- Contract ID: `completion:29872c3be59b7fc5bc61`.
+- Contract hash: `d74b47c792432c1b1001b9b07109ea4dceb9967b9b480b510f635d74c74a5c4b`.
+- Pre partition hash: `34c74571899818058cdf6f847a2b9b85bdc049e771a88eef554d89fb361a8643`.
+- Post partition hash: `dc130500bd1a77a0636cef77165665a19e7184457837b4ce94c505d46ae52a1c`.
+- Authority hash, unchanged across states: `4e829495f03ddea3326dd9e22f9c302e309172ee60ec6e494f28a2576bf16528`.
+- Pre/post observation hashes: `6491fe99…` and `99b1d057…`.
+- Provenance hash: `550f337990d4b18008817ce1ce39f45567d281b65dcfb525bad0d002e5aa84f2`.
+
+### Phase 2.5 Completion analysis
+
+Exact enumeration cap: `128`. Sampling: `false`. Source-grounded completion dimensions within the sealed certificate target: `0`. Enumerated choice vectors: `1`. Unique contract completions: `1`. Deduplicated candidates: `0`.
+
+The incomplete paired allow/deny fact is recorded in `contract_provenance.json` as excluded from completion generation because it is outside the declared target. No author prior resolves it. Separate fixture tests enumerate a two-dimension, four-vector family exactly; verify dimension-order invariance and hash deduplication; reject non-source-grounded dimensions; and fail when exact enumeration exceeds the supplied cap.
+
+Completion-set status: `IDENTIFIED`. Completion-set hash: `73835e681c01fc579ee4fcf09191d0d96f3e0ec446a7f1c77b51dc945d1bd0d2`.
+
+### Phase 2.6 Mechanical touch result
+
+Touch was not present in the action or any semantic fact. `touch.py` derived it by comparing all positive-support successors against the source state on the same `U_H`:
+
+- `E=false`: normalized admitted evidence hash is unchanged.
+- `R=true`: partition equivalence changes from one eight-member block to eight realm-distinguished blocks.
+- `A=false`: canonical authority is unchanged.
+
+The representation witness contains all 28 unordered history pairs that were equivalent before the intervention and split afterward; there are zero merge witnesses. The Parquet record has ten explicitly typed columns. Seal validation reloads Parquet, validates names and types, reconstructs the canonical touch record, and matches its content hash.
+
+Reachable `(completion, state, action)` pairs: `1`. Touch records: `1`. Exactly one record per pair: `true`. Coverage: `100%`. Touch-summary hash: `c457ec2a556d9bdd397fa2a2c6bef2354654ea2b8c787c793ea89548dc20071f`.
+
+### Phase 2.7 Route classification and fidelity
+
+All eight cases were classified before any freeze result as `SINGLE_ACTION`. The basis is exactly one source-grounded historical action and zero admitted competing routes. The generic classifier also has tests for `NO_REPAIR_SPACE`, `R-ONLY_ROUTE`, and `NONDEGENERATE`.
+
+Route-classification hash: `ec2310862ac0ac462e24e5d0178803fa7a65c9346c9ea8fe821b7b80fde951d8`.
+
+Fidelity evaluated every case/completion pair: `8/8` passed (`100%`). Each pair independently checks pre-certificate absence, post-certificate satisfaction, native expected-realm equality, untainted controller observation, positive-support transition, and historical atomicity. One mismatch would stop sealing and Phase-3 authorization.
+
+Fidelity-report hash: `fc709e7a9b46c292889f04bd82344893173d907fe392d8ab73d5dc924992f4c1`.
+
+### Phase 2.8 Structured console statements and identifying comments
+
+The final source registry contains 50 structured `console.log` statements overall. Phase 2 adds 26 statements; all 50 have immediately adjacent identifying comments and matching event IDs. Registry hash: `23d40e0d3a6dbac372430d471db12f04f511488266c02f39b4602cb72cfaa4ab`.
+
+| File | Comment line | `console.log` line | Identifying comment |
+|---|---:|---:|---|
+| `scripts/phase2_extract_contract.py` | 45 | 46 | `# console.log: external.phase2.extract_contract.start` |
+| `scripts/phase2_extract_contract.py` | 48 | 49 | `# console.log: external.phase2.extract_contract.verify_phase1_seal` |
+| `scripts/phase2_extract_contract.py` | 63 | 64 | `# console.log: external.phase2.extract_contract.extract_semantic_facts` |
+| `scripts/phase2_extract_contract.py` | 67 | 68 | `# console.log: external.phase2.extract_contract.validate_fact_lineage` |
+| `scripts/phase2_extract_contract.py` | 74 | 75 | `# console.log: external.phase2.extract_contract.complete` |
+| `scripts/phase2_validate_contract.py` | 69 | 70 | `# console.log: external.phase2.validate_contract.start` |
+| `scripts/phase2_validate_contract.py` | 80 | 81 | `# console.log: external.phase2.validate_contract.validate_facts` |
+| `scripts/phase2_validate_contract.py` | 88 | 89 | `# console.log: external.phase2.validate_contract.compile_m_ext` |
+| `scripts/phase2_validate_contract.py` | 105 | 106 | `# console.log: external.phase2.validate_contract.enumerate_completions` |
+| `scripts/phase2_validate_contract.py` | 117 | 118 | `# console.log: external.phase2.validate_contract.fidelity_and_route` |
+| `scripts/phase2_validate_contract.py` | 165 | 166 | `# console.log: external.phase2.validate_contract.complete` |
+| `scripts/phase2_extract_touch.py` | 55 | 56 | `# console.log: external.phase2.extract_touch.start` |
+| `scripts/phase2_extract_touch.py` | 59 | 60 | `# console.log: external.phase2.extract_touch.derive_successor_union` |
+| `scripts/phase2_extract_touch.py` | 65 | 66 | `# console.log: external.phase2.extract_touch.write_parquet` |
+| `scripts/phase2_extract_touch.py` | 128 | 129 | `# console.log: external.phase2.extract_touch.complete` |
+| `scripts/phase2_seal.py` | 40 | 41 | `# console.log: external.phase2.seal.start` |
+| `scripts/phase2_seal.py` | 56 | 57 | `# console.log: external.phase2.seal.validate_contract_touch_fidelity` |
+| `scripts/phase2_seal.py` | 120 | 121 | `# console.log: external.phase2.seal.hash_artifact_graph` |
+| `scripts/phase2_seal.py` | 158 | 159 | `# console.log: external.phase2.seal.complete` |
+| `scripts/run_external_validation.mjs` | 97 | 98 | `// console.log: external.phase2.orchestrator.start` |
+| `scripts/run_external_validation.mjs` | 100 | 101 | `// console.log: external.phase2.step07.extract_contract_facts` |
+| `scripts/run_external_validation.mjs` | 104 | 105 | `// console.log: external.phase2.step08.validate_contract` |
+| `scripts/run_external_validation.mjs` | 108 | 109 | `// console.log: external.phase2.step09.extract_touch` |
+| `scripts/run_external_validation.mjs` | 112 | 113 | `// console.log: external.phase2.step10.seal_contract` |
+| `scripts/run_external_validation.mjs` | 116 | 117 | `// console.log: external.phase2.step11.run_authoritative_tests` |
+| `scripts/run_external_validation.mjs` | 124 | 125 | `// console.log: external.phase2.orchestrator.complete` |
+
+The registry is generated from final source; the table above is copied from that machine artifact after the final implementation commit.
+
+### Phase 2.9 Verification and stress-test evidence
+
+Final authoritative environment:
+
+- Implementation Git SHA: `d37728ae0ebf8e08efcb3ec076f12f2b846e8281`.
+- Environment hash: `1e51b0a0a78f5eb8f0d2a6f3f75d13507398eed216991ae2a7f494007b288427`.
+- Dependency lock hash: `684d9c199c91dedb7bd8c1450332bf47fa466766368d202df29d4ea7eb4ac9ff`.
+- Python `3.12.13`, Node `v22.15.0`, Git `2.49.0.windows.1`, Windows 11 AMD64.
+
+Test and static verification:
+
+- Phase-aware Phase-1 checkpoint: `59 passed`, `3 expected Phase-2 authoritative skips`.
+- Final Phase-2 authoritative suite: `62 passed`, `0 failed`, `0 skipped`.
+- Branch-aware coverage: `88.24%`, above the enforced `85%` minimum.
+- Ruff format and lint: pass.
+- All JSON schema files parse and every generated normative object validates under Draft 2020-12.
+- Python compilation, Node syntax, and Git whitespace checks: pass.
+
+Algorithmic and adversarial coverage:
+
+- common-domain missing/member-duplication/cross-domain rejection;
+- partition rename, history-order, duplicate-history, and representation-key invariance;
+- concrete split/merge witness generation;
+- authority-versus-field-existence distinction and all five authority categories;
+- evaluator-only taint rejection;
+- empty, E-only, R-only, A-only, and mixed E/R/A truth tables;
+- positive-successor union across separate E, R, and A successors;
+- manual touch-label and nonpositive-support rejection;
+- exact completion enumeration, permutation invariance, deduplication, cap failure, and author-prior rejection;
+- artifact, case, action, history, provenance, and canonical-serialization permutation invariance;
+- semantic locator quote-hash corruption, contract self-hash corruption, common-domain corruption, and unknown normative-field rejection;
+- all four route classifications;
+- authoritative seal graph, Parquet schema/content, touch, provenance, no-taint, and native-fidelity checks.
+
+Full clean-rerun stress test:
+
+- Baseline generated file count: `50`.
+- The safe cleaner removed only the named unsealed run, then Phase 1 and Phase 2 were regenerated in full.
+- Regenerated file count: `50`.
+- SHA-256 byte differences across all external-source and run artifacts: `0`.
+- This equality includes `touch_records.parquet`.
+- Final rerun: Phase-1 checkpoint `59 passed, 3 skipped`; Phase-2 suite `62 passed`.
+
+Final compliance extraction returned: 26/26 required paths; 12/12 `M_ext` components; 8 unique histories and common `U_H` in every state; 26 existing versus 24 admitted evidence artifacts; 1 pre partition block versus 8 post blocks; all five authority categories; unchanged authority; zero omega taint; one action; zero manual touch fields; exact enumeration, one completion, no sampling; 100% touch coverage; eight `SINGLE_ACTION` cases; 8/8 fidelity; two states within the 500-state preference; 26 Phase-2 logs and 50 total logs with complete adjacency; zero prohibited outputs; and exactly one run directory.
+
+### Phase 2.10 Rejected and superseded attempts
+
+1. Direct script execution initially failed because Phase-2 scripts imported shared validators through the `scripts` package while only `src` was on `sys.path`. Repository-root insertion was added explicitly before any scientific output was accepted.
+2. The first completion-set build hashed the full self-hashed contract object instead of using its normative `contract_hash`; the binding check failed. Enumeration was corrected to use the contract's declared self-hash and covered by tests.
+3. The first clean authoritative orchestrator attempt regenerated Phase 1 successfully but then ran Phase-2 authoritative tests before Phase-2 artifacts existed, producing three missing-file failures. It produced no Phase-2 contract or verdict. The orchestrator now sets `PC_PHASE=1` at the Phase-1 checkpoint and `PC_PHASE=2` only after sealing. This boundary is tested and the complete clean run subsequently passed.
+4. The clause audit after the initial passing development run found that `Lambda` needed explicit `FIELD` and `ATTESTATION` categories, nested schemas needed stricter unknown-field rejection, and seal validation needed to reconstruct Parquet content rather than check only its shape. Those gaps were completed before the authoritative implementation commit and final run.
+
+No superseded Phase-2 output directory remains in the repository. Only artifacts bound to final implementation `d37728a…` and data commit `e21f778…` are authoritative.
+
+### Phase 2.11 Model training and overfitting disposition
+
+No model was trained, tuned, selected, or benchmarked. The authoritative Polaris cases are used only for native fidelity. Algorithm tests use separate synthetic partition, completion, taint, provenance, and E/R/A fixtures. Property and metamorphic tests operate on generated permutations rather than fitting to the eight scientific cases. The incomplete terminal-decision fact was retained rather than filled from author preference.
+
+### Phase 2.12 Clause-by-clause WorkPlan compliance audit
+
+| WorkPlan Phase-2 requirement | Compliance | Evidence |
+|---|---|---|
+| Two-pass facts-then-contract architecture | PASS | Separate extraction and validation/compilation scripts; invalid facts cannot reach Pass B. |
+| Content-derived semantic facts with exact lineage | PASS | 18/18 facts schema-valid; 18/18 locators and quote hashes valid; provenance graph complete. |
+| Explicit common `U_H` | PASS | Eight unique histories, explicit validity predicate, canonical enumeration, identical state domains. |
+| Normalize `H` and distinguish existence/admission | PASS | 26 existing artifacts and 24 admitted artifacts stored separately; stable normalized hash. |
+| Canonical `P_R` and equivalence witnesses | PASS | Raw keys discarded; pre one block, post eight blocks; 28 concrete split witnesses. |
+| Canonical `Lambda` | PASS | `SOURCE`, `FIELD`, `PREDICATE`, `ATTESTATION`, `CHECK`; admissibility and provenance on every entry. |
+| Controller-visible `omega` and taint rejection | PASS | Value-free visible-field schemas; zero evaluator values; direct and recursive taint tests. |
+| Bind terminal and `A_Pi` to native evidence | PASS | Eight exact native realm facts; target remains certificate-qualified; decision limitation retained. |
+| Complete atomic `Q` and `Succ+`, no manual touch | PASS | One action with preconditions, atomicity, public effect, support, provenance, unit cost; zero touch fields. |
+| Exact completions up to 128, no author priors/sampling | PASS | One exact completion; fixture enumeration/dedup/cap/prior tests; `sampled=false`. |
+| Mechanical successor-union touch | PASS | One record for one reachable pair; `E0/R1/A0`; 28 witnesses; Parquet content revalidated. |
+| Pre-result route classification | PASS | Eight `SINGLE_ACTION` classifications; no freeze output existed when written. |
+| Native fidelity for every case/completion | PASS | 8/8 pairs and all six checks per pair pass; 100%. |
+| Six schemas, six modules, four scripts, ten outputs | PASS | All 26 required Phase-2 paths exist; outputs hash-bound by `CONTRACT_SEALED`. |
+| Unit/property/metamorphic verification | PASS | Truth tables, typing, partitions, taint, completions, permutations, corruption, and authoritative tests pass. |
+| 100% touch coverage | PASS | One reachable pair and exactly one record; 100%. |
+| State tractability preference | PASS | Two states, below the preferred maximum of 500; cap overflow fails rather than approximates. |
+| No planner, freeze, `K_Pi`, or `Delta_R` in Phase 2 | PASS | Output/import/name audit found zero prohibited downstream artifacts. |
+| Exit only as identified/partial, otherwise fail closed | PASS | `IDENTIFIED`; seal authorizes Phase 3 only after schema, hash, touch, fidelity, route, and Parquet validation. |
+| Structured logging with adjacent comments | PASS | 26 Phase-2 statements, 26 matching adjacent comments; 50/50 overall. |
+| Clean deterministic regeneration | PASS | 50 files regenerated, 0 byte differences. |
+| Commit/results, ledger, push, remote verification | IN PROGRESS AT THIS LEDGER COMMIT | Implementation `d37728a…`; data `e21f778…`; ledger and remote verification follow. |
+
+Compliance conclusion: **NO OPEN PHASE-2 IMPLEMENTATION OR SCIENTIFIC COMPLIANCE GAP**. The contract is `IDENTIFIED` for the sealed certificate target, touch is complete, fidelity is complete, and Phase 3 is authorized. This does not identify paired realm-sensitive final allow/deny semantics and does not create a prevalence, superiority, or deployment claim.
+
+### Phase 2.13 Seal and commit structure before remote transaction
+
+- Contract seal hash: `ccb9ee43efa3b0904dd5a9a1bccdf666f8c90360a6ac6f8a325b864939e6edc5`.
+- Run-manifest hash: `6327e89598fad08ee7285223929b69fb2f3a8923eac7752a69117b3103fda7dd`.
+- `c72c0d4039373f7304a6a494bc1e0f25a2686aba` — initial Phase-2 implementation.
+- `d37728ae0ebf8e08efcb3ec076f12f2b846e8281` — final implementation with phase-aware authoritative checkpoints.
+- `e21f778feef22fe5e76c8eea9abb9abbb806ccd6` — authoritative Phase-2 outputs and refreshed Phase-1 audit artifacts.
+- Ledger commit: the commit containing this Phase-2 record.
+
+No remote state is preclaimed. Push and immediate remote-SHA verification are recorded after the transaction succeeds.
 
 ## Phase 3 record — Matched Freeze Experiment
 
-Status: **BLOCKED PENDING PHASE 2**
+Status: **AUTHORIZED — NOT STARTED**
 
 Required future entries:
 
@@ -555,4 +824,4 @@ Required future entries:
 
 ## 5. Next authorized action
 
-After the Phase-1 commits are pushed and remotely verified, the next authorized scientific action is Phase 2 only: recover and seal the extensional contract and mechanically derive touch from the already frozen evidence. Phase 2 may not add a competing route or paired primary case that was not admitted by Phase 1.
+After the Phase-2 commits are pushed and remotely verified, the next authorized scientific action is Phase 3 only: execute the matched F000–F111 resource-freezing experiment against sealed contract `d74b47c7…` and mechanically derived touch record `E0/R1/A0`. Phase 3 may not mutate the Phase-1 evidence, Phase-2 contract, completion set, target, route classification, or touch record.
