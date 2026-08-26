@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import sys
 from pathlib import Path
 
 import pyarrow.parquet as pq
@@ -93,7 +94,7 @@ def test_sealed_run_refuses_cleaner() -> None:
     assert RUN_ID
     process = subprocess.run(
         [
-            str(ROOT / ".venv" / "Scripts" / "python.exe"),
+            sys.executable,
             str(ROOT / "scripts" / "clean_named_run.py"),
             "--run-id",
             RUN_ID,
