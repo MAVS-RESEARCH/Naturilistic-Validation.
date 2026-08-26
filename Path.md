@@ -779,7 +779,7 @@ No model was trained, tuned, selected, or benchmarked. The authoritative Polaris
 | Exit only as identified/partial, otherwise fail closed | PASS | `IDENTIFIED`; seal authorizes Phase 3 only after schema, hash, touch, fidelity, route, and Parquet validation. |
 | Structured logging with adjacent comments | PASS | 26 Phase-2 statements, 26 matching adjacent comments; 50/50 overall. |
 | Clean deterministic regeneration | PASS | 50 files regenerated, 0 byte differences. |
-| Commit/results, ledger, push, remote verification | IN PROGRESS AT THIS LEDGER COMMIT | Implementation `d37728a…`; data `e21f778…`; ledger and remote verification follow. |
+| Commit/results, ledger, push, remote verification | PASS | Implementation `d37728a…`, data `e21f778…`, and ledger `a76d83a…` were pushed to `origin/main`; local and remote ledger SHAs matched. |
 
 Compliance conclusion: **NO OPEN PHASE-2 IMPLEMENTATION OR SCIENTIFIC COMPLIANCE GAP**. The contract is `IDENTIFIED` for the sealed certificate target, touch is complete, fidelity is complete, and Phase 3 is authorized. This does not identify paired realm-sensitive final allow/deny semantics and does not create a prevalence, superiority, or deployment claim.
 
@@ -793,6 +793,18 @@ Compliance conclusion: **NO OPEN PHASE-2 IMPLEMENTATION OR SCIENTIFIC COMPLIANCE
 - Ledger commit: the commit containing this Phase-2 record.
 
 No remote state is preclaimed. Push and immediate remote-SHA verification are recorded after the transaction succeeds.
+
+### Phase 2.14 Phase-completion transaction and remote verification
+
+- Final implementation: `d37728ae0ebf8e08efcb3ec076f12f2b846e8281`.
+- Authoritative data: `e21f778feef22fe5e76c8eea9abb9abbb806ccd6`.
+- Complete Phase-2 ledger: `a76d83ace7d6e7a4893d477fb9f85b8701a075c5`.
+- Push target: `origin/main` at `https://github.com/MAVS-RESEARCH/Naturilistic-Validation..git`.
+- Push range: `afe5441..a76d83a`.
+- Immediate verification: local `HEAD` and remote `refs/heads/main` both resolved to `a76d83ace7d6e7a4893d477fb9f85b8701a075c5`.
+- Repository state immediately after verification: clean and synchronized. This subsection is the factual follow-up record of that completed transaction.
+
+Phase-completion transaction: **PASS**.
 
 ## Phase 3 record — Matched Freeze Experiment
 
