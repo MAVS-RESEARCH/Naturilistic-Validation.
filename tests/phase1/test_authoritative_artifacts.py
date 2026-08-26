@@ -52,9 +52,12 @@ def test_authoritative_determinism_and_replay_reports_pass() -> None:
     source = read_json(authoritative_path("reports", "source_lock_determinism.json"))
     cases = read_json(authoritative_path("reports", "case_index_determinism.json"))
     replay = read_json(authoritative_path("reports", "native_replay.json"))
+    console_registry = read_json(authoritative_path("reports", "console_log_registry.json"))
     assert source["pass_count"] == 2
     assert source["artifact_hashes_equal"] is True
     assert source["history_fetches_equal"] is True
     assert cases["exact_match"] is True
     assert replay["passed"] is True
     assert all(replay["checks"].values())
+    assert console_registry["statement_count"] >= 20
+    assert console_registry["all_comments_adjacent"] is True

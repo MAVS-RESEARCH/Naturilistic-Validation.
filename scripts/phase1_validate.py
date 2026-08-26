@@ -172,6 +172,51 @@ def gate(gate_id: str, name: str, passed: bool, evidence: list[str], reason: str
     }
 
 
+def audit_console_log_adjacency(root: Path) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for path in sorted((root / "scripts").iterdir()):
+        if path.suffix not in {".py", ".mjs"}:
+            continue
+        lines = path.read_text(encoding="utf-8").splitlines()
+        for index, line in enumerate(lines):
+            if not line.lstrip().startswith("console.log("):
+                continue
+            if index == 0:
+                raise EvidenceError(f"console.log lacks preceding comment: {path.name}:1")
+            comment = lines[index - 1].strip()
+            prefix = "// console.log:" if path.suffix == ".mjs" else "# console.log:"
+            if not comment.startswith(prefix):
+                raise EvidenceError(
+                    f"console.log lacks adjacent identifying comment: {path.name}:{index + 1}"
+                )
+            event_id = comment.removeprefix(prefix).strip()
+            if not event_id:
+                raise EvidenceError(f"empty console event ID: {path.name}:{index}")
+            statement_window = " ".join(lines[index : min(index + 5, len(lines))])
+            if event_id not in statement_window:
+                raise EvidenceError(
+                    f"console event comment does not match statement: {path.name}:{index + 1}"
+                )
+            records.append(
+                {
+                    "path": path.relative_to(root).as_posix(),
+                    "comment_line": index,
+                    "log_line": index + 1,
+                    "comment": comment,
+                    "event_id": event_id,
+                }
+            )
+    if not records:
+        raise EvidenceError("no console.log statements found")
+    value_without_hash = {
+        "statement_count": len(records),
+        "all_comments_adjacent": True,
+        "all_comment_ids_match_statements": True,
+        "records": records,
+    }
+    return {**value_without_hash, "registry_hash": canonical_json_hash(value_without_hash)}
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-id", required=True)
@@ -245,6 +290,8 @@ def main() -> int:
     console.log("external.phase1.validate.native_replay", run_id=args.run_id)
     replay = native_replay(root, manifest, native_cases)
     write_json_atomic(run_root / "reports" / "native_replay.json", replay)
+    console_registry = audit_console_log_adjacency(root)
+    write_json_atomic(run_root / "reports" / "console_log_registry.json", console_registry)
 
     pr_artifact = next(
         artifact
@@ -385,6 +432,8 @@ def main() -> int:
             ),
             "source_fetch_passes": manifest["fetch_verification"]["pass_count"],
             "case_index_exact_reconstruction": case_index_deterministic,
+            "console_log_statement_count": console_registry["statement_count"],
+            "console_log_comments_adjacent": console_registry["all_comments_adjacent"],
         },
         "target_recovery": evidence["target_recovery"],
         "route_surface": {
