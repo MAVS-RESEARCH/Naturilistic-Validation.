@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import json
 import re
 from collections import Counter
 from collections.abc import Iterable
@@ -20,6 +21,13 @@ TEST_METHOD = re.compile(
     re.MULTILINE,
 )
 FORBIDDEN_MANUAL_LABEL_KEYS = {"resource_touch", "resource_touches", "touch", "touch_mask"}
+FORBIDDEN_CASE_SELECTION_TERMS = (
+    "results/",
+    "delta_r",
+    "k_pi",
+    "touch_records",
+    "freeze_result",
+)
 
 
 class EvidenceError(RuntimeError):
@@ -194,6 +202,35 @@ def count_manual_resource_label_keys(value: Any) -> int:
     elif isinstance(value, list):
         count += sum(count_manual_resource_label_keys(child) for child in value)
     return count
+
+
+def case_rule_is_source_only(case_population: dict[str, Any]) -> bool:
+    """Reject case-selection rules that depend on downstream result information."""
+    serialized = json.dumps(case_population, sort_keys=True).lower()
+    return not any(term in serialized for term in FORBIDDEN_CASE_SELECTION_TERMS)
+
+
+def historical_change_present(
+    manifest: dict[str, Any], pr_data: dict[str, Any], minimum_artifacts: int = 6
+) -> bool:
+    """Require a merged historical change and its minimum frozen evidence set."""
+    historical = [
+        artifact
+        for artifact in manifest.get("artifacts", [])
+        if artifact.get("role") == "HISTORICAL_REPAIR"
+    ]
+    return (
+        len(historical) >= minimum_artifacts
+        and pr_data.get("state") == "closed"
+        and pr_data.get("merged_at") is not None
+    )
+
+
+def primary_cases_are_native(native_case_index: dict[str, Any]) -> bool:
+    """Reject any Phase-1 primary case synthesized by the PC implementation."""
+    return all(
+        case.get("origin") == "UPSTREAM_NATIVE" for case in native_case_index.get("cases", [])
+    )
 
 
 def build_preregistration(

@@ -25,8 +25,11 @@ from pc_external.eventlog import console  # noqa: E402
 from pc_external.evidence import (  # noqa: E402
     EvidenceError,
     artifact_lookup,
+    case_rule_is_source_only,
     count_manual_resource_label_keys,
+    historical_change_present,
     load_yaml,
+    primary_cases_are_native,
 )
 from pc_external.hashing import (  # noqa: E402
     byte_hash,
@@ -303,10 +306,8 @@ def main() -> int:
         experiment["primary_system"]["merged_at"].replace("Z", "+00:00")
     )
     spec_date = datetime.fromisoformat(experiment["specification_date"].replace("Z", "+00:00"))
-    source_rule_text = json.dumps(experiment["case_population"], sort_keys=True).lower()
-    forbidden_selection_terms = ("results/", "delta_r", "k_pi", "touch_records", "freeze_result")
-    case_rule_source_only = not any(term in source_rule_text for term in forbidden_selection_terms)
-    no_pc_cases = all(case["origin"] == "UPSTREAM_NATIVE" for case in native_cases["cases"])
+    case_rule_source_only = case_rule_is_source_only(experiment["case_population"])
+    no_pc_cases = primary_cases_are_native(native_cases)
     historical_artifacts = [
         artifact for artifact in manifest["artifacts"] if artifact["role"] == "HISTORICAL_REPAIR"
     ]
@@ -341,9 +342,7 @@ def main() -> int:
         gate(
             "P1-E2",
             "Historical change",
-            len(historical_artifacts) >= 6
-            and pr_data["state"] == "closed"
-            and pr_data["merged_at"] is not None,
+            historical_change_present(manifest, pr_data),
             [artifact["snapshot_path"] for artifact in historical_artifacts[:6]],
             "HISTORICAL_CHANGE_MISSING",
         ),

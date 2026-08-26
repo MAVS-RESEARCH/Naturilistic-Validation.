@@ -10,8 +10,11 @@ from pc_external.evidence import (
     artifact_lookup,
     build_evidence_index,
     build_preregistration,
+    case_rule_is_source_only,
     count_manual_resource_label_keys,
     extract_native_cases,
+    historical_change_present,
+    primary_cases_are_native,
     require_immutable_ref,
     require_run_id,
 )
@@ -55,6 +58,28 @@ def test_artifact_lookup_rejects_duplicate_ids_and_paths() -> None:
 def test_manual_resource_label_scan_checks_keys_not_text_values() -> None:
     assert count_manual_resource_label_keys({"description": "E R A", "P_R": "partition"}) == 0
     assert count_manual_resource_label_keys({"resource_touch": ["R"]}) == 1
+
+
+def test_case_rule_rejects_phase2_or_phase3_result_dependencies() -> None:
+    assert case_rule_is_source_only({"include": ["upstream native tests"]})
+    for forbidden in ("results/run.json", "delta_R", "K_PI", "touch_records", "freeze_result"):
+        assert not case_rule_is_source_only({"include": [forbidden]})
+
+
+def test_missing_historical_change_evidence_is_rejected() -> None:
+    manifest = {"artifacts": [{"role": "HISTORICAL_REPAIR"}] * 5}
+    merged_pr = {"state": "closed", "merged_at": "2025-01-01T00:00:00Z"}
+    assert not historical_change_present(manifest, merged_pr)
+    manifest["artifacts"].append({"role": "HISTORICAL_REPAIR"})
+    assert historical_change_present(manifest, merged_pr)
+    assert not historical_change_present(manifest, {**merged_pr, "merged_at": None})
+
+
+def test_pc_generated_primary_case_is_rejected() -> None:
+    native = {"cases": [{"origin": "UPSTREAM_NATIVE"}]}
+    assert primary_cases_are_native(native)
+    native["cases"].append({"origin": "PC_GENERATED"})
+    assert not primary_cases_are_native(native)
 
 
 def test_source_only_case_extractor_is_deterministic(tmp_path: Path) -> None:
