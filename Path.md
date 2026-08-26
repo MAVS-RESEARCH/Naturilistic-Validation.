@@ -808,21 +808,320 @@ Phase-completion transaction: **PASS**.
 
 ## Phase 3 record — Matched Freeze Experiment
 
-Status: **AUTHORIZED — NOT STARTED**
+Status: **COMPLETE — MEASURED**
 
-Required future entries:
+Authoritative run: `external_v01_polaris_pr4992`.
 
-- Pre-run results inventory and safe cleanup record.
-- All case/completion/cost allocations across F000–F111.
-- Planner implementation/certificates and alternate exact cross-check.
-- Same-instance and action-mask diffs.
-- C1–C10 outcomes.
-- Full retained results/failure cards and classifications.
-- Determinism/runtime results, deviations, commits, and push verification.
+Bound Phase-2 contract:
+
+- Contract status: `IDENTIFIED`.
+- Contract hash: `d74b47c792432c1b1001b9b07109ea4dceb9967b9b480b510f635d74c74a5c4b`.
+- Contract seal hash: `ccb9ee43efa3b0904dd5a9a1bccdf666f8c90360a6ac6f8a325b864939e6edc5`.
+- Completion count: `1`, enumerated exactly without sampling.
+- Native case count: `8`.
+- Preregistered cost contracts executed: one primary unit-cost contract; no native secondary cost was source-grounded.
+- Derived intervention touch: `E=false, R=true, A=false`.
+- Frozen route qualifier: `SINGLE_ACTION` for all eight cases.
+
+Phase-3 completion hash: `f2c068bb888fca73a0599ae351297895b7b69a39f06a005161805c74b45e7ed6`.
+
+### Phase 3.1 Scope and implementation inventory
+
+The implementation ran the unrestricted condition plus every nonempty resource freeze on byte-identical scientific instances. It did not modify Phase-1 evidence, Phase-2 semantic facts, the contract, completion set, target, touch records, route classification, or costs.
+
+Created schemas:
+
+- `schemas/freeze_result.schema.json` strictly types allocation identity, exact freeze ID, forbidden resources, retained and blocked actions, action-mask and manifest hashes, structural extended-real value, optimal actions, certificate hash, upstream hashes, and planner algorithm.
+- `schemas/control_result.schema.json` strictly types each mandatory control's transformation, input, expected invariant, observed result, evidence, and pass state.
+
+Created production modules:
+
+- `src/pc_external/planner.py` implements the exact positive-support AND-OR minimax solver, structural infinity, improper-cycle evidence, all tied optimal initial actions, and a separately coded exhaustive stationary-policy enumerator.
+- `src/pc_external/freeze.py` defines the exact eight-cell lattice, derives disjoint-touch action masks, constructs canonical same-instance manifests, validates scientific-instance equality, computes extended-real `Delta_R` relations, and classifies results.
+- `src/pc_external/controls.py` runs C1-C10 on deep isolated copies and verifies that the authoritative contract hash is unchanged after all transformations.
+
+Created execution scripts:
+
+- `scripts/phase3_run_freezes.py` inventories a clean Phase-3 namespace, rehashes the Phase-2 seal graph, allocates every case/completion/cost/freeze cell, executes both exact planners, and writes manifests, certificates, JSONL, and typed policy traces.
+- `scripts/phase3_run_controls.py` rehashes the upstream seal, executes exactly C1-C10 on isolated copies, requires 10/10 passes, and writes the complete control ledger.
+- `scripts/phase3_aggregate.py` retains all finite, zero, null, infinite, and failure allocations; materializes case rows, completion identified sets, full lattice tables, the paper table, summary, allocation report, and failure cards.
+- `scripts/phase3_validate.py` validates schemas, exact allocations, all upstream hashes, same-instance equality, masks, certificate bindings, extended-real encoding, monotonicity, alternate-planner equality, exact Parquet columns/types, complete row retention, and the `MEASURED` exit gate.
+- `scripts/run_external_validation.mjs` now supports `--through-phase 3`; its final checkpoint runs the complete authoritative suite with `PC_PHASE=3` only after Phase 3 has been validated and completed.
+- `package.json` exposes `npm run phase3` as the one-command clean reproduction entry point.
+
+Created tests:
+
+- `tests/phase3/test_planner.py`: exact deterministic optima, tied actions, positive-support worst-case branching, improper cycles, structural infinity, action removal, invalid costs, and unknown-mask rejection on graphs entirely distinct from Polaris.
+- `tests/phase3/test_freeze.py`: all eight allocations, E/R/A/mixed/empty masks, lattice corruption, missing touch, same-instance mutation, all five extended-real relations, and negative-gap rejection.
+- `tests/phase3/test_controls.py`: C1-C10 against a synthetic two-state contract that is not a Polaris native case.
+- `tests/phase3/test_aggregation_retention.py`: separate zero/infinity row-retention and explicit missing-cell failure-card fixtures.
+- `tests/phase3/test_authoritative_phase3.py`: completion/artifact hashes, all 64 cells, finite/infinite retention, all eight coordinates, route-qualified classifications, controls, alternate exact matches, and Parquet shapes.
+
+### Phase 3.2 Results hygiene and upstream immutability
+
+The authoritative command first invoked `clean_named_run.py` against the explicit run ID. It resolved the target as a direct child of `results/external_validation_v01`, refused broad or sealed targets by construction, and removed the prior unsealed development namespace. Phase 1 and Phase 2 were then regenerated before Phase 3 began.
+
+`manifests/phase3_pre_run_inventory.json` records three inspected Phase-3 namespaces (`raw`, `processed`, and `controls`), zero prior Phase-3 files, and `clean_start=true`. The final repository contains exactly one run directory. No superseded Phase-3 namespace remains.
+
+Before every Phase-3 scientific action, the code recomputed the `CONTRACT_SEALED` self-hash and every sealed Phase-2 artifact byte hash. The contract hash remained `d74b47c7…`; the contract seal remained `ccb9ee43…`. Controls take deep copies and verify the loaded authoritative contract's canonical hash after C1-C10. The validation report binds both upstream hashes.
+
+Final run artifact inventory:
+
+- Total files under the named run: `164`.
+- Raw Phase-3 files: `131`: 64 condition manifests, 64 planner certificates, `freeze_results.jsonl`, `freeze_policy_traces.parquet`, and `planner_crosscheck.json`.
+- Processed Phase-3 files: `8`.
+- Control files: `1` with ten JSONL records.
+- Phase-3 validation report: `1`.
+- Phase-3 completion marker: `1`.
+
+### Phase 3.3 Exact planner and proof certificates
+
+The production recurrence is:
+
+`V(s) = min_a [c(a) + max_{s' in Succ+(a)} V(s')]`.
+
+Terminal states enter the fixed point at value zero. A nonterminal action becomes finite only after every positive-support successor is finite, so an optimistic unsupported branch cannot create a finite result. States outside the proper fixed point retain `{"kind":"INFINITE"}`. The certificate records every state value, canonical tied optimal action IDs, unreachable states, and cycle edges entirely within the unresolved set. Infinity never carries a numeric value or sentinel.
+
+The alternate solver does not call the production recurrence. It enumerates stationary action choices, recursively evaluates every positive-support successor under worst-case accumulation, and rejects a policy branch if recursion encounters a cycle or a missing action. All `64/64` authoritative production results matched this alternate algorithm in both extended-real value and optimal initial-action set.
+
+Separate small-graph tests covered:
+
+- a direct action tied with a two-step route, retaining both optimal action IDs;
+- a branching action whose near successor costs one and far successor costs two, yielding the correct worst-supported total of three;
+- a two-state improper cycle with an unreachable terminal, yielding structural infinity and explicit cycle evidence;
+- action removal yielding structural infinity without a sentinel;
+- negative, boolean, and fractional cost rejection;
+- unknown action-mask identity rejection.
+
+No approximation, timeout substitute, heuristic, learned parameter, or GPU was used. The authoritative graph has two states and one action, below the 500-state tractability preference.
+
+### Phase 3.4 Freeze lattice, masks, and same-instance proof
+
+Every case/completion/cost group contains exactly these cells:
+
+| Freeze | Forbidden | Retained authoritative action | `K_Pi` per case | Rows |
+|---|---|---|---:|---:|
+| `F000` | `{}` | `historical_context_realm_injection` | `1` | 8 |
+| `F100` | `{E}` | `historical_context_realm_injection` | `1` | 8 |
+| `F010` | `{R}` | none | `INFINITE` | 8 |
+| `F001` | `{A}` | `historical_context_realm_injection` | `1` | 8 |
+| `F110` | `{E,R}` | none | `INFINITE` | 8 |
+| `F101` | `{E,A}` | `historical_context_realm_injection` | `1` | 8 |
+| `F011` | `{R,A}` | none | `INFINITE` | 8 |
+| `F111` | `{E,R,A}` | none | `INFINITE` | 8 |
+
+Each mask is derived mechanically: retain an action iff its Phase-2 touch set is disjoint from the forbidden set. The one atomic historical action is never split. The validator recomputed all 64 masks and compared retained IDs, blocked IDs, and mask hashes exactly.
+
+Every condition manifest embeds a canonical scientific instance containing identity, `S`, `s0`, `U_H`, `H`, `P_R`, `Lambda`, `omega`, `Q`, `Succ+`, `Terminal`, `A_Pi`, cost, contract hash, and provenance IDs. Within each case/completion/cost group, all eight canonical base-instance hashes are identical. The only condition differences are the forbidden set and derived action mask; planner outputs are separately bound downstream. Eight same-instance groups passed, each with exactly eight manifests. A separate corruption fixture changed `s0` in one manifest and was rejected.
+
+### Phase 3.5 Metrics, identified sets, and classification
+
+Allocation arithmetic:
+
+`8 native cases × 1 exact completion × 8 freezes × 1 unit cost = 64 required cells`.
+
+Observed cells: `64`, unique cells: `64`, missing cells: `0`, duplicate cells: `0`.
+
+For every native case:
+
+- unrestricted `K_Pi(F000)=1`;
+- R-frozen `K_Pi(F010)=INFINITE`;
+- `Delta_R` relation: `STRUCTURAL_POSITIVE`;
+- structural-R flag: `true`;
+- zero-gap flag: `false`;
+- result classification: `STRUCTURAL_R`;
+- identification status: `IDENTIFIED`;
+- route-degeneracy qualifier: `SINGLE_ACTION`;
+- audit eligibility: `true`.
+
+This is a resource-necessity result for the sealed certificate target within the one-action source-grounded repair space. It is not evidence of prevalence, superiority, deployment readiness, or a nondegenerate competing-route effect.
+
+`case_results.parquet` contains eight rows and explicit kind, nullable value, and result ID columns for all eight freezes. `identified_sets.parquet` contains eight exact completion-aggregated rows, point identification and positive-sign-invariance flags, relation/result-class sets, and a mechanically assigned identified result class. `freeze_lattice.parquet` and `freeze_lattice.csv` retain all 64 cells. `paper_table.csv` retains all eight native cases. `failure_cards.jsonl` is present and empty because every native case has a complete valid allocation; it was not omitted.
+
+Finite result rows retained: `32`. Infinite result rows retained: `32`. Zero and infinity retention are also tested on independent synthetic fixtures. The validator performed `152` strict subset/superset freeze comparisons and found no action-mask or value-monotonicity violation. `FINITE_NEGATIVE` is a hard invalid-run error.
+
+### Phase 3.6 Mandatory controls C1-C10
+
+All controls ran on isolated copies and passed `10/10`:
+
+| Control | Transformation and asserted invariant | Result |
+|---|---|---|
+| C1 | Bijective representation-value rename; canonical partition remains invariant. | PASS |
+| C2 | Reverse action/history serialization; canonical solution digest remains invariant. | PASS |
+| C3 | Add irrelevant metadata; planner result remains invariant. | PASS |
+| C4 | Add a positive-cost empty-touch self-loop; it remains mask-eligible in all freezes and changes no closure value. | PASS |
+| C5 | Independently recompute every lattice mask by exact touch/forbidden-set disjointness. | PASS |
+| C6 | Challenge with one synthetic E/R/A mixed action; retain it only in F000 and never split it. | PASS |
+| C7 | Search controller observations for evaluator terminal labels; all remain isolated. | PASS |
+| C8 | Delete intervention provenance; the production intervention validator rejects the copy. | PASS |
+| C9 | Inject evaluator-only truth into controller-visible data; the taint validator rejects the copy. | PASS |
+| C10 | Reverse a nontrivial isolated completion-order fixture; canonical completion identity remains invariant. | PASS |
+
+Every control record contains its transformation input, expected invariant, observed result, evidence, and Boolean pass state under `control_result.schema.json`. The controls file hash is bound into `PHASE3_COMPLETE`.
+
+### Phase 3.7 Outputs and hash bindings
+
+Raw outputs:
+
+- `raw/condition_manifests/*.json`: 64.
+- `raw/planner_certificates/*.json`: 64.
+- `raw/freeze_results.jsonl`: 64 rows.
+- `raw/freeze_policy_traces.parquet`: 128 rows, one for each of two states per result.
+- `raw/planner_crosscheck.json`: 64/64 passed.
+
+Processed outputs:
+
+- `processed/case_results.parquet`: 8 rows.
+- `processed/identified_sets.parquet`: 8 rows.
+- `processed/freeze_lattice.parquet`: 64 rows.
+- `processed/freeze_lattice.csv`: 64 data rows.
+- `processed/summary.json`: `MEASURED`, eight `STRUCTURAL_R` cases, ten control passes, zero failures.
+- `processed/paper_table.csv`: 8 data rows.
+- `processed/allocation_report.json`: complete allocation and zero failures.
+- `processed/failure_cards.jsonl`: zero rows, retained as the explicit failure-card channel.
+
+Key hashes:
+
+- Validation hash: `9372e6ee22d4e3ffd6147c785f54503d964c1cfba32309fda7bc374d5d7d7653`.
+- Summary hash: `38761be85c2c4981adaedbdd1ea18320a1231693992ecfb714f2ce9ba36e0959`.
+- Phase-3 completion hash: `f2c068bb888fca73a0599ae351297895b7b69a39f06a005161805c74b45e7ed6`.
+- Final run-manifest hash: `4756e91d31d59a4548a9a97023addd2dbc5e7f6a093a0892fa508d32b5326281`.
+
+`PHASE3_COMPLETE` binds every raw, processed, control, and Phase-3 validation artifact by relative path and SHA-256; it also binds the contract and contract-seal hashes, counts, `MEASURED` status, and Phase-4 authorization.
+
+### Phase 3.8 Structured console statements and identifying comments
+
+The final source registry contains `80` structured `console.log` statements overall. Phase 3 adds `30`; all 80 statements have immediately adjacent identifying comments and matching event IDs. The registry is generated from final source during the clean authoritative run.
+
+| File | Comment line | `console.log` line | Identifying comment |
+|---|---:|---:|---|
+| `scripts/phase3_run_freezes.py` | 91 | 92 | `# console.log: external.phase3.run_freezes.start` |
+| `scripts/phase3_run_freezes.py` | 94 | 95 | `# console.log: external.phase3.run_freezes.inventory_prior_results` |
+| `scripts/phase3_run_freezes.py` | 116 | 117 | `# console.log: external.phase3.run_freezes.verify_sealed_contract` |
+| `scripts/phase3_run_freezes.py` | 130 | 131 | `# console.log: external.phase3.run_freezes.allocate_lattice` |
+| `scripts/phase3_run_freezes.py` | 260 | 261 | `# console.log: external.phase3.run_freezes.write_raw_outputs` |
+| `scripts/phase3_run_freezes.py` | 303 | 304 | `# console.log: external.phase3.run_freezes.complete` |
+| `scripts/phase3_run_controls.py` | 42 | 43 | `# console.log: external.phase3.run_controls.start` |
+| `scripts/phase3_run_controls.py` | 45 | 46 | `# console.log: external.phase3.run_controls.verify_isolation_boundary` |
+| `scripts/phase3_run_controls.py` | 58 | 59 | `# console.log: external.phase3.run_controls.execute_c1_c10` |
+| `scripts/phase3_run_controls.py` | 69 | 70 | `# console.log: external.phase3.run_controls.complete` |
+| `scripts/phase3_aggregate.py` | 67 | 68 | `# console.log: external.phase3.aggregate.start` |
+| `scripts/phase3_aggregate.py` | 80 | 81 | `# console.log: external.phase3.aggregate.retain_case_rows` |
+| `scripts/phase3_aggregate.py` | 155 | 156 | `# console.log: external.phase3.aggregate.build_identified_sets` |
+| `scripts/phase3_aggregate.py` | 273 | 274 | `# console.log: external.phase3.aggregate.write_reports` |
+| `scripts/phase3_aggregate.py` | 327 | 328 | `# console.log: external.phase3.aggregate.complete` |
+| `scripts/phase3_validate.py` | 110 | 111 | `# console.log: external.phase3.validate.start` |
+| `scripts/phase3_validate.py` | 113 | 114 | `# console.log: external.phase3.validate.verify_upstream_seal` |
+| `scripts/phase3_validate.py` | 125 | 126 | `# console.log: external.phase3.validate.schemas_and_allocations` |
+| `scripts/phase3_validate.py` | 158 | 159 | `# console.log: external.phase3.validate.manifests_masks_certificates` |
+| `scripts/phase3_validate.py` | 194 | 195 | `# console.log: external.phase3.validate.mathematical_relations` |
+| `scripts/phase3_validate.py` | 223 | 224 | `# console.log: external.phase3.validate.parquet_and_retention` |
+| `scripts/phase3_validate.py` | 369 | 370 | `# console.log: external.phase3.validate.seal_phase` |
+| `scripts/phase3_validate.py` | 414 | 415 | `# console.log: external.phase3.validate.complete` |
+| `scripts/run_external_validation.mjs` | 131 | 132 | `// console.log: external.phase3.orchestrator.start` |
+| `scripts/run_external_validation.mjs` | 134 | 135 | `// console.log: external.phase3.step12.run_freezes` |
+| `scripts/run_external_validation.mjs` | 138 | 139 | `// console.log: external.phase3.step13.run_controls` |
+| `scripts/run_external_validation.mjs` | 142 | 143 | `// console.log: external.phase3.step14.aggregate` |
+| `scripts/run_external_validation.mjs` | 146 | 147 | `// console.log: external.phase3.step15.validate_and_complete` |
+| `scripts/run_external_validation.mjs` | 150 | 151 | `// console.log: external.phase3.step16.run_authoritative_tests` |
+| `scripts/run_external_validation.mjs` | 158 | 159 | `// console.log: external.phase3.orchestrator.complete` |
+
+### Phase 3.9 Verification, stress testing, and determinism
+
+Development verification after the final hardening changes:
+
+- Non-authoritative suite: `71 passed`, `10` expected authoritative skips.
+- Ruff format and lint: pass.
+- Python module compilation: pass.
+- Node syntax: pass.
+- Git whitespace check: pass.
+- Every JSON schema parses; authoritative freeze and control objects validate under Draft 2020-12.
+
+Clean authoritative reproduction checkpoints:
+
+- Phase-1 checkpoint: `74 passed`, `7` expected downstream authoritative skips.
+- Phase-2 checkpoint: `77 passed`, `4` expected Phase-3 authoritative skips.
+- Final Phase-3 checkpoint: `81 passed`, `0 failed`, `0 skipped`.
+- Branch-aware coverage: `89.33%`, above the enforced `85%` minimum.
+- Production/alternate exact equality: `64/64`.
+- Mandatory controls: `10/10`.
+- Expected/observed allocations: `64/64`.
+- Same-instance groups: `8/8` with all eight cells.
+- Exact action masks: `64/64`.
+- Superset monotonicity relations: `152/152`.
+- Finite/infinite retention: `32/32` and `32/32` respectively.
+- Failure cards: `0`, with all eight native cases allocated to results.
+
+Determinism stress benchmark:
+
+1. The full `npm run phase3` command performed safe cleanup and regenerated Phase 1, Phase 2, and Phase 3.
+2. SHA-256 hashes were captured for every external-source and named-run artifact.
+3. The full command was run again from another clean named-run state.
+4. File counts were `193` before and `193` after across the compared source/run trees.
+5. Byte differences across all 193 artifacts: `0`.
+6. Byte differences across processed scientific artifacts: `0`.
+7. Equality includes all four Parquet files, both CSV files, 64 manifests, 64 certificates, raw JSONL, controls, validation, and completion marker.
+
+No nondeterministic timestamp is present in the Phase-3 scientific namespace.
+
+### Phase 3.10 Rejected and superseded attempts
+
+1. The first integrated development run passed its scientific gates but predated final hardening. It was not committed as authoritative. The audit strengthened C8 to invoke the production intervention validator, strengthened C4 to prove closure values remain unchanged across all freezes, made completion permutation nontrivial on an isolated fixture, canonicalized planner action order, added an identified-result-class field, and made Parquet validators enforce exact ordered columns and exact types.
+2. The superseded development outputs were removed by the safe named-run cleaner before the authoritative run. The clean-start inventory proves zero Phase-3 files existed when the accepted computation began.
+3. A PowerShell wildcard passed directly to `py_compile` was not expanded by the executable and returned an invalid-argument diagnostic during development. This did not execute or alter scientific computation. Subsequent full pytest imports, authoritative executions, Ruff, and Node syntax validation passed.
+
+No superseded results remain. Only artifacts generated by implementation commit `624311d…` are in the Phase-3 namespace.
+
+### Phase 3.11 Model training and overfitting disposition
+
+No model was trained, tuned, selected, or benchmarked. There are no learned weights, hyperparameters, training splits, prompts, or fitted thresholds. Therefore training-versus-test benchmark leakage is not applicable.
+
+Algorithmic overfitting was controlled by using benchmarks entirely different from the authoritative Polaris cases: synthetic deterministic/tied-route graphs, positive-support branching graphs, improper cycles, E/R/A/mixed/empty touch fixtures, manifest corruption, zero/infinity retention, and a synthetic two-state control contract. The authoritative eight cases are used only for the sealed matched experiment and final artifact assertions. Every authoritative optimum was independently cross-checked by a separately coded exhaustive algorithm.
+
+### Phase 3.12 Clause-by-clause WorkPlan compliance audit
+
+| WorkPlan Phase-3 requirement | Compliance | Evidence |
+|---|---|---|
+| Run unrestricted plus seven nonempty freezes | PASS | Exact F000-F111 lattice; eight rows per freeze and 64 total. |
+| Every preregistered cost contract | PASS | Unit primary executed for all cells; sealed native-secondary list is empty. |
+| `freeze_result` and `control_result` schemas | PASS | Strict schemas; all 64 results and 10 controls validated. |
+| Parquet type/column validators | PASS | Exact ordered names and exact Arrow types enforced for all four Parquet files. |
+| `planner.py`, `freeze.py`, `controls.py` | PASS | Three production modules implemented and tested. |
+| Four Phase-3 scripts | PASS | Freeze, controls, aggregation, and validation scripts executed in one-command orchestration. |
+| Condition manifests, traces, JSONL, certificates | PASS | 64 manifests, 128 trace rows, 64 result rows, 64 certificates. |
+| Complete processed output family | PASS | Case results, identified sets, summary, paper table, Parquet/CSV lattice, allocation, and failure-card channel present. |
+| Exact disjoint-touch masks; no mixed split | PASS | 64 exact mask comparisons and mixed-action C6 pass. |
+| Same-instance freezing | PASS | Eight groups with byte-identical canonical scientific instances across all eight cells. |
+| Exact deterministic/branching planner | PASS | AND-OR minimax proper-policy fixed point, worst positive support, improper-cycle evidence. |
+| All optimal IDs and infinity certificates | PASS | Canonical tied action IDs and structural unreachability/cycle certificates retained. |
+| Unit/native metrics, `Delta_R`, flags, route/status/audit | PASS | Unit metrics complete; native cost correctly absent; every required field materialized. |
+| Five extended-real relations and negative detector | PASS | All five fixture-tested; negative relation invalidates the run; no sentinel infinity. |
+| Every completion; exact identified sets | PASS | One exact completion solved exhaustively; eight point-identified set rows and sign flags. |
+| C1-C10 isolated controls | PASS | 10/10, complete transformation/evidence records, no contract mutation. |
+| Complete retention and failure cards | PASS | 32 finite plus 32 infinite raw rows; eight case rows; explicit empty failure-card channel. |
+| Alternate exact comparison on small graphs | PASS | Separate exhaustive solver matched all 64 authoritative cells; distinct synthetic fixtures pass. |
+| Eight cells for each case/completion/cost | PASS | Allocation bijection 64 expected/64 observed, no missing or duplicate key. |
+| Action-removal and superset monotonicity | PASS | 152 strict subset comparisons; zero violations. |
+| Reject all listed invalid-run conditions | PASS | Hash, schema, allocation, manifest, mask, infinity, relation, and control gates fail closed; corruption fixtures exercise them. |
+| Deterministic rerun | PASS | 193 files before/after; zero byte differences overall and in processed outputs. |
+| Runtime/tractability rule | PASS | Two states, one action, 64 cells, no approximation/GPU; complete runs finish in minutes on the recorded laptop environment. |
+| `MEASURED` exit gate | PASS | `PHASE3_COMPLETE` binds all artifacts and authorizes Phase 4. |
+| Structured logs with adjacent comments | PASS | 30 Phase-3 and 80 total statements; 80/80 adjacency and ID matches. |
+| Results hygiene | PASS | Named unsealed run removed; accepted inventory starts at zero Phase-3 files; exactly one current run remains. |
+| Commit/results, ledger, push, remote verification | PENDING TRANSACTION | Implementation `624311d…` and authoritative data `b6b1146…` committed locally; ledger/push verification follows this record. |
+
+Compliance conclusion: **NO OPEN PHASE-3 IMPLEMENTATION OR SCIENTIFIC COMPLIANCE GAP**. Phase 3 is `MEASURED`, every Phase-3 gate in `WorkPlan.md` passes, and Phase 4 is authorized. The scientific result remains explicitly qualified as `SINGLE_ACTION` and does not support prevalence, superiority, or deployment claims.
+
+### Phase 3.13 Commit structure before remote transaction
+
+- Implementation: `624311d9d37710f0e77fcfe8d7a22fbf37fc6d01` — exact planner, freezing, controls, schemas, scripts, orchestration, and tests.
+- Authoritative data: `b6b1146c81ff222a038c65f8542ab5891c92d6d4` — clean deterministic Phase-3 outputs and refreshed upstream audit manifests.
+- Ledger commit: the commit containing this complete Phase-3 record.
+- Push and immediate remote-SHA verification: pending the ledger commit; no remote state is preclaimed.
 
 ## Phase 4 record — Independent Audit, Claims, and Seal
 
-Status: **BLOCKED PENDING PHASE 3**
+Status: **AUTHORIZED — NOT STARTED**
 
 Required future entries:
 
@@ -836,4 +1135,4 @@ Required future entries:
 
 ## 5. Next authorized action
 
-After the Phase-2 commits are pushed and remotely verified, the next authorized scientific action is Phase 3 only: execute the matched F000–F111 resource-freezing experiment against sealed contract `d74b47c7…` and mechanically derived touch record `E0/R1/A0`. Phase 3 may not mutate the Phase-1 evidence, Phase-2 contract, completion set, target, route classification, or touch record.
+After the Phase-3 commits are pushed and remotely verified, the next authorized scientific action is Phase 4 only: independently recompute touch and every freeze result, execute the A1-A12 corruption suite, enforce the claim gate and implementation-import boundary, build the complete artifact graph, seal the run, and prove post-seal clean reproduction. Phase 4 may not mutate any Phase-1, Phase-2, or Phase-3 scientific artifact.
