@@ -67,15 +67,20 @@ class GitHubHistoryProvider:
 
     API_ROOT = "https://api.github.com/repos/apache/polaris"
 
+    @staticmethod
+    def _headers() -> dict[str, str]:
+        headers = {
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "pc-external-validation-v0.1",
+            "X-GitHub-Api-Version": "2022-11-28",
+        }
+        token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
+        return headers
+
     def _get(self, url: str) -> Any:
-        request = urllib.request.Request(
-            url,
-            headers={
-                "Accept": "application/vnd.github+json",
-                "User-Agent": "pc-external-validation-v0.1",
-                "X-GitHub-Api-Version": "2022-11-28",
-            },
-        )
+        request = urllib.request.Request(url, headers=self._headers())
         with urllib.request.urlopen(request, timeout=60) as response:
             return json.load(response)
 

@@ -5,7 +5,7 @@ from pathlib import Path
 
 import yaml
 
-from pc_external.source_lock import SourceLocker
+from pc_external.source_lock import GitHubHistoryProvider, SourceLocker
 
 
 def git(path: Path, *args: str) -> str:
@@ -23,6 +23,14 @@ def commit(repo: Path, message: str) -> str:
     git(repo, "add", ".")
     git(repo, "commit", "-m", message)
     return git(repo, "rev-parse", "HEAD")
+
+
+def test_github_history_provider_uses_optional_authentication(monkeypatch) -> None:
+    monkeypatch.delenv("GH_TOKEN", raising=False)
+    monkeypatch.delenv("GITHUB_TOKEN", raising=False)
+    assert "Authorization" not in GitHubHistoryProvider._headers()
+    monkeypatch.setenv("GH_TOKEN", "test-token")
+    assert GitHubHistoryProvider._headers()["Authorization"] == "Bearer test-token"
 
 
 def test_source_locker_uses_two_independent_materializations(tmp_path: Path) -> None:
