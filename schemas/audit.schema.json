@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mavs-research.example/schemas/audit.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_id", "phase", "source_audit", "contract_audit", "touch_audit",
+    "planner_audit", "aggregation_audit", "controls_audit", "corruption_audit",
+    "claims_audit", "artifact_graph_audit", "findings", "supported_claim_findings",
+    "overall_pass", "final_verdict", "audit_hash"
+  ],
+  "properties": {
+    "run_id": {"type": "string"},
+    "phase": {"const": 4},
+    "source_audit": {"$ref": "#/$defs/gate"},
+    "contract_audit": {"$ref": "#/$defs/gate"},
+    "touch_audit": {"$ref": "#/$defs/gate"},
+    "planner_audit": {"$ref": "#/$defs/gate"},
+    "aggregation_audit": {"$ref": "#/$defs/gate"},
+    "controls_audit": {"$ref": "#/$defs/gate"},
+    "corruption_audit": {"$ref": "#/$defs/gate"},
+    "claims_audit": {"$ref": "#/$defs/gate"},
+    "artifact_graph_audit": {"$ref": "#/$defs/gate"},
+    "findings": {"type": "array", "items": {"type": "object"}},
+    "supported_claim_findings": {"type": "integer", "minimum": 0},
+    "overall_pass": {"type": "boolean"},
+    "final_verdict": {"enum": ["PASS — POSITIVE EXTERNAL", "PASS — NULL EXTERNAL", "PASS — PARTIAL EXTERNAL", "PASS — FEASIBILITY NEGATIVE", "FAIL — INVALID EXPERIMENT", "STOP — THEORY CONFLICT"]},
+    "audit_hash": {"$ref": "common.schema.json#/$defs/sha256"}
+  },
+  "$defs": {
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["passed", "checked", "matched", "evidence"],
+      "properties": {
+        "passed": {"type": "boolean"},
+        "checked": {"type": "integer", "minimum": 0},
+        "matched": {"type": "integer", "minimum": 0},
+        "evidence": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

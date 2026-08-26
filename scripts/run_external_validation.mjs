@@ -25,8 +25,8 @@ function parseThroughPhase(argv) {
     return 2;
   }
   const phase = Number(argv[index + 1]);
-  if (![1, 2, 3].includes(phase)) {
-    throw new Error("--through-phase must be 1, 2, or 3");
+  if (![1, 2, 3, 4].includes(phase)) {
+    throw new Error("--through-phase must be 1, 2, 3, or 4");
   }
   return phase;
 }
@@ -50,6 +50,23 @@ function run(python, script, runId, extraArgs = []) {
     [resolve(repositoryRoot, "scripts", script), "--run-id", runId, "--repo-root", repositoryRoot, ...extraArgs],
     { cwd: repositoryRoot, env: { ...process.env, PC_RUN_ID: runId }, stdio: "inherit" },
   );
+}
+
+function runExpectedFailure(python, script, runId) {
+  try {
+    execFileSync(
+      python,
+      [resolve(repositoryRoot, "scripts", script), "--run-id", runId, "--repo-root", repositoryRoot],
+      { cwd: repositoryRoot, env: { ...process.env, PC_RUN_ID: runId }, encoding: "utf8", stdio: "pipe" },
+    );
+  } catch (error) {
+    const output = `${error.stdout ?? ""}${error.stderr ?? ""}`;
+    if (error.status !== 0 && output.includes("external.phase1.clean_named_run.refused")) {
+      return;
+    }
+    throw error;
+  }
+  throw new Error("expected sealed-run cleaner refusal did not occur");
 }
 
 const runId = parseRunId(process.argv.slice(2));
@@ -157,3 +174,45 @@ execFileSync(
 
 // console.log: external.phase3.orchestrator.complete
 console.log(JSON.stringify({ event: "external.phase3.orchestrator.complete", run_id: runId }));
+
+if (throughPhase === 3) {
+  process.exit(0);
+}
+
+// console.log: external.phase4.orchestrator.start
+console.log(JSON.stringify({ event: "external.phase4.orchestrator.start", run_id: runId }));
+
+// console.log: external.phase4.step17.independent_audit
+console.log(JSON.stringify({ event: "external.phase4.step17.independent_audit", run_id: runId }));
+run(python, "phase4_independent_audit.py", runId);
+
+// console.log: external.phase4.step18.corruption_tests
+console.log(JSON.stringify({ event: "external.phase4.step18.corruption_tests", run_id: runId }));
+run(python, "phase4_corruption_tests.py", runId);
+
+// console.log: external.phase4.step19.generate_claims_and_seal
+console.log(JSON.stringify({ event: "external.phase4.step19.generate_claims_and_seal", run_id: runId }));
+run(python, "phase4_generate_claims.py", runId);
+
+// console.log: external.phase4.step20.read_only_independent_recomputation
+console.log(JSON.stringify({ event: "external.phase4.step20.read_only_independent_recomputation", run_id: runId }));
+run(python, "phase4_independent_audit.py", runId, ["--read-only"]);
+
+// console.log: external.phase4.step21.verify_final_seal_read_only
+console.log(JSON.stringify({ event: "external.phase4.step21.verify_final_seal_read_only", run_id: runId }));
+run(python, "phase4_generate_claims.py", runId, ["--verify-seal"]);
+
+// console.log: external.phase4.step22.prove_cleaner_refusal
+console.log(JSON.stringify({ event: "external.phase4.step22.prove_cleaner_refusal", run_id: runId }));
+runExpectedFailure(python, "clean_named_run.py", runId);
+
+// console.log: external.phase4.step23.run_authoritative_tests
+console.log(JSON.stringify({ event: "external.phase4.step23.run_authoritative_tests", run_id: runId }));
+execFileSync(
+  python,
+  ["-m", "pytest", "-q", "--cov=pc_external", "--cov=pc_external_audit", "--cov-report=term-missing", "--cov-report=xml"],
+  { cwd: repositoryRoot, env: { ...process.env, PC_RUN_ID: runId, PC_PHASE: "4" }, stdio: "inherit" },
+);
+
+// console.log: external.phase4.orchestrator.complete
+console.log(JSON.stringify({ event: "external.phase4.orchestrator.complete", run_id: runId }));

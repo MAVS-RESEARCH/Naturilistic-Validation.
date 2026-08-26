@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mavs-research.example/schemas/claim_ledger.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["run_id", "external_operational_validation", "result_sign", "locked_flags", "claims", "ledger_hash"],
+  "properties": {
+    "run_id": {"type": "string"},
+    "external_operational_validation": {"type": "boolean"},
+    "result_sign": {"enum": ["POSITIVE", "NULL", "PARTIAL", "FEASIBILITY_NEGATIVE", "INVALID", "THEORY_CONFLICT"]},
+    "locked_flags": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prevalence", "superiority", "deployment_readiness"],
+      "properties": {
+        "prevalence": {"const": false},
+        "superiority": {"const": false},
+        "deployment_readiness": {"const": false}
+      }
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claim_id", "predicate", "supported", "evidence_paths", "prohibited_dependencies", "generated_text", "claim_hash"],
+        "properties": {
+          "claim_id": {"type": "string", "pattern": "^CLM-[A-Z]+-[0-9]{3}$"},
+          "predicate": {"type": "string", "minLength": 1},
+          "supported": {"type": "boolean"},
+          "evidence_paths": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+          "prohibited_dependencies": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+          "generated_text": {"type": "string", "minLength": 1},
+          "claim_hash": {"$ref": "common.schema.json#/$defs/sha256"}
+        }
+      }
+    },
+    "ledger_hash": {"$ref": "common.schema.json#/$defs/sha256"}
+  }
+}

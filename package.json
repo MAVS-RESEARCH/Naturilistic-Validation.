@@ -11,6 +11,7 @@
     "phase1": "node scripts/run_external_validation.mjs --run-id external_v01_polaris_pr4992 --through-phase 1",
     "phase2": "node scripts/run_external_validation.mjs --run-id external_v01_polaris_pr4992 --through-phase 2",
     "phase3": "node scripts/run_external_validation.mjs --run-id external_v01_polaris_pr4992 --through-phase 3",
+    "phase4": "node scripts/run_external_validation.mjs --run-id external_v01_polaris_pr4992 --through-phase 4",
     "test": "python -m pytest"
   }
 }
