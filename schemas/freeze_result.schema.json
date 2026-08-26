@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mavs-research.example/schemas/freeze_result.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "result_id", "run_id", "case_id", "completion_id", "cost_contract_id",
+    "freeze_id", "forbidden_resources", "retained_action_ids", "blocked_action_ids",
+    "action_mask_hash", "condition_manifest_hash", "contract_hash", "contract_seal_hash",
+    "value", "optimal_action_ids", "certificate_hash", "planner_algorithm"
+  ],
+  "properties": {
+    "result_id": {"type": "string", "pattern": "^freeze_result:[0-9a-f]{20}$"},
+    "run_id": {"type": "string"},
+    "case_id": {"type": "string", "pattern": "^case:[0-9a-f]{20}$"},
+    "completion_id": {"type": "string", "pattern": "^completion:[0-9a-f]{20}$"},
+    "cost_contract_id": {"type": "string"},
+    "freeze_id": {"enum": ["F000", "F100", "F010", "F001", "F110", "F101", "F011", "F111"]},
+    "forbidden_resources": {"type": "array", "uniqueItems": true, "items": {"enum": ["E", "R", "A"]}},
+    "retained_action_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "blocked_action_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "action_mask_hash": {"$ref": "common.schema.json#/$defs/sha256"},
+    "condition_manifest_hash": {"$ref": "common.schema.json#/$defs/sha256"},
+    "contract_hash": {"$ref": "common.schema.json#/$defs/sha256"},
+    "contract_seal_hash": {"$ref": "common.schema.json#/$defs/sha256"},
+    "value": {
+      "oneOf": [
+        {"type": "object", "additionalProperties": false, "required": ["kind", "value"], "properties": {"kind": {"const": "FINITE"}, "value": {"type": "integer", "minimum": 0}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "INFINITE"}}}
+      ]
+    },
+    "optimal_action_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "certificate_hash": {"$ref": "common.schema.json#/$defs/sha256"},
+    "planner_algorithm": {"const": "EXACT_AND_OR_MINIMAX"}
+  }
+}

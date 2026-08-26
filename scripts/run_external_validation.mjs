@@ -25,8 +25,8 @@ function parseThroughPhase(argv) {
     return 2;
   }
   const phase = Number(argv[index + 1]);
-  if (![1, 2].includes(phase)) {
-    throw new Error("--through-phase must be 1 or 2");
+  if (![1, 2, 3].includes(phase)) {
+    throw new Error("--through-phase must be 1, 2, or 3");
   }
   return phase;
 }
@@ -123,3 +123,37 @@ execFileSync(
 
 // console.log: external.phase2.orchestrator.complete
 console.log(JSON.stringify({ event: "external.phase2.orchestrator.complete", run_id: runId }));
+
+if (throughPhase === 2) {
+  process.exit(0);
+}
+
+// console.log: external.phase3.orchestrator.start
+console.log(JSON.stringify({ event: "external.phase3.orchestrator.start", run_id: runId }));
+
+// console.log: external.phase3.step12.run_freezes
+console.log(JSON.stringify({ event: "external.phase3.step12.run_freezes", run_id: runId }));
+run(python, "phase3_run_freezes.py", runId);
+
+// console.log: external.phase3.step13.run_controls
+console.log(JSON.stringify({ event: "external.phase3.step13.run_controls", run_id: runId }));
+run(python, "phase3_run_controls.py", runId);
+
+// console.log: external.phase3.step14.aggregate
+console.log(JSON.stringify({ event: "external.phase3.step14.aggregate", run_id: runId }));
+run(python, "phase3_aggregate.py", runId);
+
+// console.log: external.phase3.step15.validate_and_complete
+console.log(JSON.stringify({ event: "external.phase3.step15.validate_and_complete", run_id: runId }));
+run(python, "phase3_validate.py", runId);
+
+// console.log: external.phase3.step16.run_authoritative_tests
+console.log(JSON.stringify({ event: "external.phase3.step16.run_authoritative_tests", run_id: runId }));
+execFileSync(
+  python,
+  ["-m", "pytest", "-q", "--cov=pc_external", "--cov-report=term-missing", "--cov-report=xml"],
+  { cwd: repositoryRoot, env: { ...process.env, PC_RUN_ID: runId, PC_PHASE: "3" }, stdio: "inherit" },
+);
+
+// console.log: external.phase3.orchestrator.complete
+console.log(JSON.stringify({ event: "external.phase3.orchestrator.complete", run_id: runId }));

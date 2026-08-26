@@ -16,8 +16,8 @@ PHASE = os.environ.get("PC_PHASE")
 pytestmark = [
     pytest.mark.authoritative,
     pytest.mark.skipif(
-        not RUN_ID or PHASE != "2",
-        reason="PC_RUN_ID and PC_PHASE=2 are required for authoritative checks",
+        not RUN_ID or PHASE not in {"2", "3"},
+        reason="PC_RUN_ID and PC_PHASE=2 or 3 are required for authoritative checks",
     ),
 ]
 
