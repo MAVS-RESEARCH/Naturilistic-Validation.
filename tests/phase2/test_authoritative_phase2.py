@@ -11,10 +11,14 @@ from pc_external.hashing import byte_hash, canonical_json_hash
 
 ROOT = Path(__file__).resolve().parents[2]
 RUN_ID = os.environ.get("PC_RUN_ID")
+PHASE = os.environ.get("PC_PHASE")
 
 pytestmark = [
     pytest.mark.authoritative,
-    pytest.mark.skipif(not RUN_ID, reason="PC_RUN_ID is required for authoritative checks"),
+    pytest.mark.skipif(
+        not RUN_ID or PHASE != "2",
+        reason="PC_RUN_ID and PC_PHASE=2 are required for authoritative checks",
+    ),
 ]
 
 

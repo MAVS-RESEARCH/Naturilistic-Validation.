@@ -84,7 +84,7 @@ console.log(JSON.stringify({ event: "external.phase1.step06.run_phase_tests", ru
 execFileSync(
   python,
   ["-m", "pytest", "-q", "--cov=pc_external", "--cov-report=term-missing", "--cov-report=xml"],
-  { cwd: repositoryRoot, env: { ...process.env, PC_RUN_ID: runId }, stdio: "inherit" },
+  { cwd: repositoryRoot, env: { ...process.env, PC_RUN_ID: runId, PC_PHASE: "1" }, stdio: "inherit" },
 );
 
 // console.log: external.phase1.orchestrator.complete
@@ -118,7 +118,7 @@ console.log(JSON.stringify({ event: "external.phase2.step11.run_authoritative_te
 execFileSync(
   python,
   ["-m", "pytest", "-q", "--cov=pc_external", "--cov-report=term-missing", "--cov-report=xml"],
-  { cwd: repositoryRoot, env: { ...process.env, PC_RUN_ID: runId }, stdio: "inherit" },
+  { cwd: repositoryRoot, env: { ...process.env, PC_RUN_ID: runId, PC_PHASE: "2" }, stdio: "inherit" },
 );
 
 // console.log: external.phase2.orchestrator.complete
