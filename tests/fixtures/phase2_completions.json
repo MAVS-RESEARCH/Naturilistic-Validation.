@@ -1,0 +1,7 @@
+{
+  "dimensions": [
+    {"dimension_id": "source-conflict-a", "source_grounded": true, "choices": ["left", "right"]},
+    {"dimension_id": "source-conflict-b", "source_grounded": true, "choices": [0, 1]}
+  ],
+  "expected_choice_vectors": 4
+}

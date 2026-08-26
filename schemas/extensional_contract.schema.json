@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mavs-research.example/schemas/extensional_contract.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["run_id", "model_type", "completion_id", "S", "s0", "U_H", "H", "P_R", "Lambda", "omega", "Q", "Succ_plus", "Terminal", "A_Pi", "c", "states", "source_fact_ids", "limitations", "contract_hash"],
+  "properties": {
+    "run_id": {"type": "string"},
+    "model_type": {"const": "M_ext"},
+    "completion_id": {"type": "string", "pattern": "^completion:[0-9a-f]{20}$"},
+    "S": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "s0": {"type": "string"},
+    "U_H": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["history_id", "case_id", "source_case_ids", "provenance"], "properties": {"history_id": {"type": "string", "pattern": "^history:[0-9a-f]{20}$"}, "case_id": {"type": "string"}, "source_case_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}}, "provenance": {"type": "object", "additionalProperties": false, "required": ["artifact_id", "locator"], "properties": {"artifact_id": {"type": "string"}, "locator": {"type": "object", "additionalProperties": false, "required": ["path", "method", "method_line", "assertion_line"], "properties": {"path": {"type": "string"}, "method": {"type": "string"}, "method_line": {"type": "integer", "minimum": 1}, "assertion_line": {"type": "integer", "minimum": 1}}}}}}}},
+    "H": {"type": "object", "additionalProperties": false, "required": ["existing_artifact_ids", "admitted_artifact_ids", "normalization"], "properties": {"existing_artifact_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}, "admitted_artifact_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}, "normalization": {"type": "string"}}},
+    "P_R": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "object", "additionalProperties": false, "required": ["history_domain", "blocks", "partition_hash"], "properties": {"history_domain": {"type": "array", "items": {"type": "string"}}, "blocks": {"type": "array", "items": {"type": "array", "items": {"type": "string"}}}, "partition_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}}},
+    "Lambda": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "object", "additionalProperties": false, "required": ["entries", "authority_hash"], "properties": {"entries": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["kind", "identifier", "admissible", "provenance_fact_ids"], "properties": {"kind": {"enum": ["SOURCE", "FIELD", "PREDICATE", "ATTESTATION", "CHECK"]}, "identifier": {"type": "string"}, "admissible": {"type": "boolean"}, "provenance_fact_ids": {"type": "array", "items": {"type": "string"}}}}}, "authority_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}}},
+    "omega": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "object", "additionalProperties": false, "required": ["visible_fields", "contains_evaluator_truth", "observation_hash"], "properties": {"visible_fields": {"type": "array", "items": {"type": "string"}}, "contains_evaluator_truth": {"const": false}, "observation_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}}},
+    "Q": {"type": "array", "minItems": 1, "items": {"$ref": "intervention.schema.json"}},
+    "Succ_plus": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}},
+    "Terminal": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "object", "additionalProperties": false, "required": ["target_class", "predicate", "pre_satisfied", "post_satisfied", "provenance_fact_ids"], "properties": {"target_class": {"const": "AUTHORIZATION_INPUT_CERTIFICATE"}, "predicate": {"type": "string"}, "pre_satisfied": {"const": false}, "post_satisfied": {"const": true}, "provenance_fact_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}}}}},
+    "A_Pi": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "object", "additionalProperties": false, "required": ["kind", "expected_realm", "evaluator_truth_ref"], "properties": {"kind": {"const": "AUTHORIZATION_INPUT_CERTIFICATE"}, "expected_realm": {"type": "string"}, "evaluator_truth_ref": {"type": "string"}}}},
+    "c": {"type": "object", "additionalProperties": false, "required": ["primary", "unit_cost", "native_secondary"], "properties": {"primary": {"const": "unit"}, "unit_cost": {"const": 1}, "native_secondary": {"type": "array", "maxItems": 0}}},
+    "states": {"type": "array", "minItems": 1, "items": {"$ref": "state.schema.json"}},
+    "source_fact_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^fact:[0-9a-f]{20}$"}},
+    "limitations": {"type": "array", "items": {"type": "string"}},
+    "contract_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

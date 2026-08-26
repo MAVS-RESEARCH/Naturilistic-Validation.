@@ -6,8 +6,9 @@ The authoritative scientific protocol is defined in `WorkPlan.md`; implementatio
 
 ## Phase status
 
-- Phase 1: external source lock and preregistration.
-- Phases 2–4: unavailable until their upstream gates pass.
+- Phase 1: complete; external source lock and preregistration are eligible.
+- Phase 2: extensional contract recovery and mechanical touch extraction.
+- Phases 3–4: unavailable until their upstream gates pass.
 
 ## Phase-1 execution
 
@@ -16,7 +17,7 @@ $env:PC_PYTHON = ".venv\Scripts\python.exe"
 node scripts/run_external_validation.mjs --run-id external_v01_polaris_pr4992
 ```
 
-The orchestrator stops at the first failed gate. It does not derive E/R/A touch or run a closure planner during Phase 1.
+Use `--through-phase 2` to regenerate Phase 1 and then compile and seal the Phase-2 contract. The orchestrator stops at the first failed gate. It never runs a closure planner in Phase 1 or Phase 2.
 
 ## Tests
 

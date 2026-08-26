@@ -71,6 +71,23 @@ def write_json_atomic(path: Path, value: Any) -> None:
             temp_path.unlink()
 
 
+def write_jsonl_atomic(path: Path, values: list[Any]) -> None:
+    """Write canonical JSON Lines with deterministic ordering supplied by the caller."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = b"".join(canonical_json_bytes(value) + b"\n" for value in values)
+    descriptor, temp_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+    temp_path = Path(temp_name)
+    try:
+        with os.fdopen(descriptor, "wb") as handle:
+            handle.write(payload)
+            handle.flush()
+            os.fsync(handle.fileno())
+        temp_path.replace(path)
+    finally:
+        if temp_path.exists():
+            temp_path.unlink()
+
+
 def content_id(namespace: str, value: Any, length: int = 20) -> str:
     if not namespace or not namespace.replace("_", "").isalnum():
         raise ValueError("namespace must be alphanumeric with optional underscores")

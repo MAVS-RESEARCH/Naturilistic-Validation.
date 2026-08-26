@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mavs-research.example/schemas/semantic_fact.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["fact_id", "subject", "statement", "artifact_id", "locator", "evidence_type", "derivation_rule", "conflicts", "primary_inclusion", "allowed_influence"],
+  "properties": {
+    "fact_id": {"type": "string", "pattern": "^fact:[0-9a-f]{20}$"},
+    "subject": {"type": "string", "minLength": 1},
+    "statement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["predicate", "value"],
+      "properties": {"predicate": {"type": "string", "minLength": 1}, "value": {}}
+    },
+    "artifact_id": {"type": "string", "pattern": "^artifact:[0-9a-f]{20}$"},
+    "locator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "start_line", "end_line", "quote_sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "start_line": {"type": "integer", "minimum": 1},
+        "end_line": {"type": "integer", "minimum": 1},
+        "quote_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "evidence_type": {"enum": ["DIRECT", "DERIVED", "INCOMPLETE"]},
+    "derivation_rule": {"type": ["string", "null"]},
+    "conflicts": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^fact:[0-9a-f]{20}$"}},
+    "primary_inclusion": {"type": "boolean"},
+    "allowed_influence": {"enum": ["HISTORY", "REPRESENTATION_INTERFACE", "AUTHORITY", "INTERVENTION", "TERMINAL", "TARGET"]}
+  }
+}

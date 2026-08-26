@@ -19,6 +19,18 @@ function parseRunId(argv) {
   return runId;
 }
 
+function parseThroughPhase(argv) {
+  const index = argv.indexOf("--through-phase");
+  if (index < 0) {
+    return 2;
+  }
+  const phase = Number(argv[index + 1]);
+  if (![1, 2].includes(phase)) {
+    throw new Error("--through-phase must be 1 or 2");
+  }
+  return phase;
+}
+
 function pythonExecutable() {
   if (process.env.PC_PYTHON) {
     return resolve(repositoryRoot, process.env.PC_PYTHON);
@@ -41,6 +53,7 @@ function run(python, script, runId, extraArgs = []) {
 }
 
 const runId = parseRunId(process.argv.slice(2));
+const throughPhase = parseThroughPhase(process.argv.slice(2));
 const python = pythonExecutable();
 
 // console.log: external.phase1.orchestrator.start
@@ -76,3 +89,37 @@ execFileSync(
 
 // console.log: external.phase1.orchestrator.complete
 console.log(JSON.stringify({ event: "external.phase1.orchestrator.complete", run_id: runId }));
+
+if (throughPhase === 1) {
+  process.exit(0);
+}
+
+// console.log: external.phase2.orchestrator.start
+console.log(JSON.stringify({ event: "external.phase2.orchestrator.start", run_id: runId }));
+
+// console.log: external.phase2.step07.extract_contract_facts
+console.log(JSON.stringify({ event: "external.phase2.step07.extract_contract_facts", run_id: runId }));
+run(python, "phase2_extract_contract.py", runId);
+
+// console.log: external.phase2.step08.validate_contract
+console.log(JSON.stringify({ event: "external.phase2.step08.validate_contract", run_id: runId }));
+run(python, "phase2_validate_contract.py", runId);
+
+// console.log: external.phase2.step09.extract_touch
+console.log(JSON.stringify({ event: "external.phase2.step09.extract_touch", run_id: runId }));
+run(python, "phase2_extract_touch.py", runId);
+
+// console.log: external.phase2.step10.seal_contract
+console.log(JSON.stringify({ event: "external.phase2.step10.seal_contract", run_id: runId }));
+run(python, "phase2_seal.py", runId);
+
+// console.log: external.phase2.step11.run_authoritative_tests
+console.log(JSON.stringify({ event: "external.phase2.step11.run_authoritative_tests", run_id: runId }));
+execFileSync(
+  python,
+  ["-m", "pytest", "-q", "--cov=pc_external", "--cov-report=term-missing", "--cov-report=xml"],
+  { cwd: repositoryRoot, env: { ...process.env, PC_RUN_ID: runId }, stdio: "inherit" },
+);
+
+// console.log: external.phase2.orchestrator.complete
+console.log(JSON.stringify({ event: "external.phase2.orchestrator.complete", run_id: runId }));

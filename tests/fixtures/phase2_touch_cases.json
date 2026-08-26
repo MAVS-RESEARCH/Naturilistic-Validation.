@@ -1,0 +1,9 @@
+{
+  "cases": [
+    {"id": "empty", "evidence": false, "representation": false, "authority": false},
+    {"id": "E", "evidence": true, "representation": false, "authority": false},
+    {"id": "R", "evidence": false, "representation": true, "authority": false},
+    {"id": "A", "evidence": false, "representation": false, "authority": true},
+    {"id": "mixed", "evidence": true, "representation": true, "authority": true}
+  ]
+}

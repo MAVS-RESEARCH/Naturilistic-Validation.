@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mavs-research.example/schemas/completion_set.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["mode", "cap", "dimension_count", "enumerated_choice_vectors", "completion_count", "deduplicated_count", "sampled", "status", "completions", "completion_set_hash"],
+  "properties": {
+    "mode": {"const": "EXACT_ENUMERATION"},
+    "cap": {"type": "integer", "minimum": 1, "maximum": 128},
+    "dimension_count": {"type": "integer", "minimum": 0},
+    "enumerated_choice_vectors": {"type": "integer", "minimum": 1},
+    "completion_count": {"type": "integer", "minimum": 1},
+    "deduplicated_count": {"type": "integer", "minimum": 0},
+    "sampled": {"const": false},
+    "status": {"enum": ["IDENTIFIED", "PARTIALLY_IDENTIFIED"]},
+    "completions": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["completion_id", "contract_hash", "choices"], "properties": {"completion_id": {"type": "string", "pattern": "^completion:[0-9a-f]{20}$"}, "contract_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "choices": {"type": "object"}}}},
+    "completion_set_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

@@ -8,7 +8,8 @@
     "node": ">=20"
   },
   "scripts": {
-    "phase1": "node scripts/run_external_validation.mjs --run-id external_v01_polaris_pr4992",
+    "phase1": "node scripts/run_external_validation.mjs --run-id external_v01_polaris_pr4992 --through-phase 1",
+    "phase2": "node scripts/run_external_validation.mjs --run-id external_v01_polaris_pr4992 --through-phase 2",
     "test": "python -m pytest"
   }
 }

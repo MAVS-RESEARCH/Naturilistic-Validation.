@@ -1,0 +1,5 @@
+{
+  "universe": ["history:a", "history:b", "history:c"],
+  "before_keys": {"history:a": "same", "history:b": "same", "history:c": "same"},
+  "after_keys": {"history:a": "x", "history:b": "y", "history:c": "z"}
+}

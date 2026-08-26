@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mavs-research.example/schemas/touch_record.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["touch_record_id", "completion_id", "state_id", "action_id", "successor_ids", "touches", "witnesses", "provenance_hash"],
+  "properties": {
+    "touch_record_id": {"type": "string", "pattern": "^touch:[0-9a-f]{20}$"},
+    "completion_id": {"type": "string", "pattern": "^completion:[0-9a-f]{20}$"},
+    "state_id": {"type": "string"},
+    "action_id": {"type": "string"},
+    "successor_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "touches": {"type": "object", "additionalProperties": false, "required": ["E", "R", "A"], "properties": {"E": {"type": "boolean"}, "R": {"type": "boolean"}, "A": {"type": "boolean"}}},
+    "witnesses": {"type": "object", "additionalProperties": false, "required": ["E", "R", "A"], "properties": {"E": {"type": "array"}, "R": {"type": "array"}, "A": {"type": "array"}}},
+    "provenance_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

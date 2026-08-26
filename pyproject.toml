@@ -11,6 +11,7 @@ requires-python = ">=3.11"
 license = { text = "Apache-2.0" }
 dependencies = [
   "jsonschema>=4.23,<5",
+  "pyarrow>=20,<21",
   "PyYAML>=6.0,<7",
 ]
 
@@ -31,7 +32,7 @@ addopts = "-ra --strict-config --strict-markers"
 testpaths = ["tests"]
 pythonpath = ["src"]
 markers = [
-  "authoritative: validates generated authoritative Phase-1 artifacts",
+  "authoritative: validates generated authoritative scientific artifacts",
   "network: requires external network access",
 ]
 
