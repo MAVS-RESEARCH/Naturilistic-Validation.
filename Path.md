@@ -119,7 +119,14 @@ Completed checks:
 - Ran Git whitespace/error checking with no reported errors.
 - Inspected the document heads/tails and repository status; only the two requested Markdown files are new.
 
-The remaining bootstrap verification action is to commit and push these two files and confirm the remote branch contains the commit. That remote fact will be reported in the task handoff; it is intentionally not preclaimed here.
+### 3.8 Bootstrap Git and remote record
+
+- Documentation implementation commit: `c1da59ca7cc2b3e38a6f228f82e2b8d2d58b0eea` (`docs: establish external validation work plan`).
+- Push target: `origin/main`.
+- Remote verification immediately after push: `refs/heads/main` resolved to the same full SHA as local `HEAD`.
+- Working tree after the implementation push: clean and synchronized with `origin/main`.
+
+This ledger evidence is committed as a follow-up documentation record and pushed before handoff, consistent with the two-commit phase-completion pattern prescribed by `WorkPlan.md` even though the bootstrap is not itself a scientific phase.
 
 ## 4. Phase execution records
 
