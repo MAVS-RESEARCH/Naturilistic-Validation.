@@ -3,9 +3,10 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
+import pytest
 import yaml
 
-from pc_external.source_lock import GitHubHistoryProvider, SourceLocker
+from pc_external.source_lock import GitHubHistoryProvider, SourceLocker, SourceLockError
 
 
 def git(path: Path, *args: str) -> str:
@@ -31,6 +32,60 @@ def test_github_history_provider_uses_optional_authentication(monkeypatch) -> No
     assert "Authorization" not in GitHubHistoryProvider._headers()
     monkeypatch.setenv("GH_TOKEN", "test-token")
     assert GitHubHistoryProvider._headers()["Authorization"] == "Bearer test-token"
+
+
+def test_source_locker_rejects_missing_commit(tmp_path: Path) -> None:
+    source = tmp_path / "missing-source"
+    source.mkdir()
+    git(source, "init", "--quiet")
+    git(source, "config", "user.name", "Fixture")
+    git(source, "config", "user.email", "fixture@example.test")
+    (source / "file.txt").write_text("base\n", encoding="utf-8")
+    valid = commit(source, "base")
+    experiment = {
+        "primary_system": {
+            "repository_origin": source.as_uri(),
+            "pre_repair_ref": valid,
+            "pr_head_ref": "f" * 40,
+            "post_repair_ref": valid,
+            "source_artifacts": [],
+        }
+    }
+    locker = SourceLocker(repository_root=tmp_path, run_id="missing_commit")
+    with pytest.raises(SourceLockError, match="command failed"):
+        locker._materialize_pass(
+            experiment=experiment, destination=None, pass_name="missing_commit"
+        )
+
+
+def test_source_locker_rejects_wrong_ancestry(tmp_path: Path) -> None:
+    source = tmp_path / "ancestry-source"
+    source.mkdir()
+    git(source, "init", "--quiet")
+    git(source, "config", "user.name", "Fixture")
+    git(source, "config", "user.email", "fixture@example.test")
+    (source / "file.txt").write_text("base\n", encoding="utf-8")
+    base = commit(source, "base")
+    git(source, "checkout", "--quiet", "-b", "side")
+    (source / "file.txt").write_text("side\n", encoding="utf-8")
+    pre = commit(source, "side")
+    git(source, "checkout", "--quiet", base)
+    (source / "file.txt").write_text("post\n", encoding="utf-8")
+    post = commit(source, "post")
+    experiment = {
+        "primary_system": {
+            "repository_origin": source.as_uri(),
+            "pre_repair_ref": pre,
+            "pr_head_ref": post,
+            "post_repair_ref": post,
+            "source_artifacts": [],
+        }
+    }
+    locker = SourceLocker(repository_root=tmp_path, run_id="wrong_ancestry")
+    with pytest.raises(SourceLockError, match="not an ancestor"):
+        locker._materialize_pass(
+            experiment=experiment, destination=None, pass_name="wrong_ancestry"
+        )
 
 
 def test_source_locker_uses_two_independent_materializations(tmp_path: Path) -> None:

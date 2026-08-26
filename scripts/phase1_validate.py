@@ -79,6 +79,13 @@ def verify_artifacts(root: Path, manifest: dict[str, Any]) -> None:
             raise EvidenceError(f"semantic hash mismatch: {artifact['artifact_id']}")
 
 
+def require_phase1_configs_sealed(configs: dict[str, dict[str, Any]]) -> None:
+    """Fail closed unless every normative configuration is explicitly sealed."""
+    for name, config in configs.items():
+        if config.get("phase1_sealed") is not True:
+            raise EvidenceError(f"configuration is not Phase-1 sealed: {name}")
+
+
 def independent_case_reconstruction(
     root: Path,
     experiment: dict[str, Any],
@@ -263,14 +270,14 @@ def main() -> int:
     }
     if actual_config_hashes != config_hashes or preregistration["config_hashes"] != config_hashes:
         raise EvidenceError("configuration hashes do not match preregistration")
-    for name, config in (
-        ("experiment", experiment),
-        ("controls", controls),
-        ("costs", costs),
-        ("completion_policy", completion),
-    ):
-        if config.get("phase1_sealed") is not True:
-            raise EvidenceError(f"configuration is not Phase-1 sealed: {name}")
+    require_phase1_configs_sealed(
+        {
+            "experiment": experiment,
+            "controls": controls,
+            "costs": costs,
+            "completion_policy": completion,
+        }
+    )
 
     generated_pairs = {
         (case["source_case_ids"][0], case["expected_realm"]) for case in native_cases["cases"]
