@@ -1,0 +1,142 @@
+experiment_version: external_validation_v01
+phase1_sealed: true
+generated_at: "2026-08-26T00:00:00Z"
+specification_date: "2026-08-26T00:00:00Z"
+primary_system:
+  id: apache_polaris_opa_pr4992
+  repository_origin: https://github.com/apache/polaris.git
+  pre_repair_ref: 68cba2027e97683cfe62502cc2982c93e74e53e6
+  pr_head_ref: ce057ab10f0f7bc021337fbc4c7ddaf08470bd8d
+  post_repair_ref: d0a8dff401e30cab1df3ca6d0e133816e80e9c10
+  historical_change_id: apache/polaris#4992
+  historical_change_url: https://github.com/apache/polaris/pull/4992
+  merged_at: "2026-07-14T18:28:07Z"
+  source_artifacts:
+    - phase: pre
+      path: extensions/auth/opa/opa-input-schema.json
+      role: SOURCE_SEMANTICS
+      allowed_influence: [REPRESENTATION_INTERFACE, CONTROLLER_OBS]
+    - phase: pre
+      path: extensions/auth/opa/src/main/java/org/apache/polaris/extension/auth/opa/OpaAuthorizationConfig.java
+      role: SOURCE_SEMANTICS
+      allowed_influence: [AUTHORITY, INTERVENTION]
+    - phase: pre
+      path: extensions/auth/opa/src/main/java/org/apache/polaris/extension/auth/opa/OpaPolarisAuthorizer.java
+      role: SOURCE_SEMANTICS
+      allowed_influence: [REPRESENTATION_INTERFACE, CONTROLLER_OBS, TERMINAL]
+    - phase: pre
+      path: extensions/auth/opa/src/main/java/org/apache/polaris/extension/auth/opa/OpaPolarisAuthorizerFactory.java
+      role: SOURCE_SEMANTICS
+      allowed_influence: [AUTHORITY, INTERVENTION, CONTROLLER_OBS]
+    - phase: pre
+      path: extensions/auth/opa/src/main/java/org/apache/polaris/extension/auth/opa/model/Context.java
+      role: SOURCE_SEMANTICS
+      allowed_influence: [REPRESENTATION_INTERFACE]
+    - phase: pre
+      path: extensions/auth/opa/src/test/java/org/apache/polaris/extension/auth/opa/OpaPolarisAuthorizerFactoryTest.java
+      role: NATIVE_TEST
+      allowed_influence: [NATIVE_CASE, FIDELITY]
+    - phase: pre
+      path: extensions/auth/opa/src/test/java/org/apache/polaris/extension/auth/opa/OpaPolarisAuthorizerTest.java
+      role: NATIVE_TEST
+      allowed_influence: [NATIVE_CASE, FIDELITY, TARGET]
+    - phase: pre
+      path: runtime/service/src/main/java/org/apache/polaris/service/config/AuthorizationConfiguration.java
+      role: SOURCE_SEMANTICS
+      allowed_influence: [AUTHORITY, INTERVENTION]
+    - phase: pre
+      path: runtime/service/src/main/java/org/apache/polaris/service/auth/DefaultPolarisAuthorizerFactory.java
+      role: EXCLUDED
+      allowed_influence: [ROUTE_EXCLUSION]
+    - phase: pre
+      path: extensions/auth/ranger/src/main/java/org/apache/polaris/extension/auth/ranger/RangerPolarisAuthorizerFactory.java
+      role: EXCLUDED
+      allowed_influence: [ROUTE_EXCLUSION]
+    - phase: pre
+      path: site/content/in-dev/unreleased/managing-security/external-pdp/opa.md
+      role: NATIVE_TARGET
+      allowed_influence: [TARGET, AUTHORITY, TERMINAL]
+    - phase: pre
+      path: site/content/in-dev/unreleased/realm.md
+      role: NATIVE_TARGET
+      allowed_influence: [TARGET, HISTORY]
+    - phase: post
+      path: CHANGELOG.md
+      role: HISTORICAL_REPAIR
+      allowed_influence: [INTERVENTION, TARGET]
+    - phase: post
+      path: extensions/auth/opa/opa-input-schema.json
+      role: SOURCE_SEMANTICS
+      allowed_influence: [REPRESENTATION_INTERFACE, CONTROLLER_OBS]
+    - phase: post
+      path: extensions/auth/opa/src/main/java/org/apache/polaris/extension/auth/opa/OpaPolarisAuthorizer.java
+      role: HISTORICAL_REPAIR
+      allowed_influence: [REPRESENTATION_INTERFACE, INTERVENTION, TERMINAL]
+    - phase: post
+      path: extensions/auth/opa/src/main/java/org/apache/polaris/extension/auth/opa/OpaPolarisAuthorizerFactory.java
+      role: HISTORICAL_REPAIR
+      allowed_influence: [AUTHORITY, INTERVENTION, CONTROLLER_OBS]
+    - phase: post
+      path: extensions/auth/opa/src/main/java/org/apache/polaris/extension/auth/opa/model/Context.java
+      role: HISTORICAL_REPAIR
+      allowed_influence: [REPRESENTATION_INTERFACE, INTERVENTION]
+    - phase: post
+      path: extensions/auth/opa/src/main/java/org/apache/polaris/extension/auth/opa/model/README.md
+      role: SOURCE_SEMANTICS
+      allowed_influence: [REPRESENTATION_INTERFACE, TARGET]
+    - phase: post
+      path: extensions/auth/opa/src/test/java/org/apache/polaris/extension/auth/opa/OpaPolarisAuthorizerFactoryTest.java
+      role: NATIVE_TEST
+      allowed_influence: [NATIVE_CASE, FIDELITY, TARGET]
+    - phase: post
+      path: extensions/auth/opa/src/test/java/org/apache/polaris/extension/auth/opa/OpaPolarisAuthorizerTest.java
+      role: NATIVE_TEST
+      allowed_influence: [NATIVE_CASE, FIDELITY, TARGET]
+case_population:
+  rule_id: all_post_repair_test_methods_with_direct_context_realm_equality_assertion
+  description: Include every upstream post-repair JUnit test method in the two changed OPA test files whose method body directly asserts equality on input.context.realm.
+  allow_pc_generated_primary_cases: false
+  selector:
+    files:
+      - extensions/auth/opa/src/test/java/org/apache/polaris/extension/auth/opa/OpaPolarisAuthorizerFactoryTest.java
+      - extensions/auth/opa/src/test/java/org/apache/polaris/extension/auth/opa/OpaPolarisAuthorizerTest.java
+    assertion_regex: '(?:get|path)\("realm"\).*?isEqualTo\("([^"]+)"\)'
+target_contract:
+  kind: AUTHORIZATION_INPUT_CERTIFICATE
+  predicate: input.context.realm equals the realm value injected into the native OPA authorizer path
+  terminal_evidence: Native tests execute an authorization request against a mock OPA endpoint and assert the emitted certificate field; policy documentation defines allow/deny consumption of that input.
+  limitation: The upstream regression suite does not contain a single paired test that executes colliding names in two realms against one realm-sensitive Rego policy.
+intervention_surface:
+  admitted:
+    - id: historical_context_realm_injection
+      provenance: apache/polaris#4992
+      description: Thread the required RealmContext identifier through the OPA factory and authorizer into input.context.realm.
+  excluded_candidates:
+    - id: switch_to_internal_authorizer
+      reason: Changes the authorization mechanism and is not established by PR 4992 as a same-instance repair action.
+    - id: switch_to_ranger_authorizer
+      reason: Changes the authorization mechanism and is not established by PR 4992 as a same-instance repair action.
+    - id: configure_per_realm_opa_policy_uri
+      reason: The pre-repair OPA configuration is application-scoped and the factory does not derive policyUri from RealmConfig.
+    - id: globally_rename_principals_or_resources
+      reason: No frozen PR artifact establishes renaming as the historical repair, and it would change native case identity.
+resources: [E, R, A]
+freeze_sets:
+  - {id: F000, forbidden: []}
+  - {id: F100, forbidden: [E]}
+  - {id: F010, forbidden: [R]}
+  - {id: F001, forbidden: [A]}
+  - {id: F110, forbidden: [E, R]}
+  - {id: F101, forbidden: [E, A]}
+  - {id: F011, forbidden: [R, A]}
+  - {id: F111, forbidden: [E, R, A]}
+claims:
+  prevalence: false
+  superiority: false
+  deployment_readiness: false
+  universal_zero_error: false
+stop_conditions:
+  - SOURCE_HASH_MISMATCH
+  - UNRESOLVED_TARGET
+  - NATIVE_BEHAVIOR_NOT_REPLAYABLE
+  - CONTRACT_REQUIRES_AUTHOR_INVENTION

@@ -1,0 +1,5 @@
+{
+  "visible_fields": ["request_id", "realm"],
+  "evaluator_only_values": ["realm-secret", "decision-secret"],
+  "leaking_observation": {"visible_fields": ["request_id"], "debug_value": "realm-secret"}
+}
