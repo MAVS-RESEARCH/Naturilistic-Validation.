@@ -1,0 +1,35 @@
+{
+  "status": "anonymized-reviewer-snapshot",
+  "review_branch": "anonymous",
+  "orphan_branch": true,
+  "canonical_branch_mutated": false,
+  "source_snapshot": "clean main file tree (status empty before anonymization)",
+  "transformations": {
+    "license_holder_to_anonymous_authors": 1,
+    "author_repository_urls_to_placeholder": 8,
+    "schema_namespace_to_anonymous_example": 15,
+    "local_paths_to_temp_placeholder": 2,
+    "author_repo_git_objects_to_aliases": 72
+  },
+  "files_transformed": 21,
+  "identity_occurrences_removed": 98,
+  "secret_scan": "PASS",
+  "local_path_scan": "PASS",
+  "author_repo_git_object_scan": "PASS",
+  "author_controlled_url_scan": "PASS",
+  "binary_metadata_scan": "PASS",
+  "external_provenance_preservation": "PASS",
+  "scientific_non_regression": "PASS",
+  "final_scan_unresolved_hits": 0,
+  "tests": {
+    "default": "65 passed, 14 skipped (hypothesis-dependent modules excluded: missing dev dependency)",
+    "authoritative": "76 passed, 3 failed, 0 new failures vs canonical baseline (pre-existing freeze_lattice.csv mismatch preserved; seal checks for redacted provenance fields differ by design, reviewer integrity via REVIEW_SHA256SUMS.txt)",
+    "baseline_comparison": "identical pass/fail/skipped counts before and after anonymization"
+  },
+  "notes": [
+    "Orphan snapshot with single root commit; no canonical ancestry.",
+    "Review hashes authenticate sanitized bytes only, not canonical seals.",
+    "Parquet and third-party artifacts left byte-identical; no blind binary replacement.",
+    "Pushed reviewer snapshot; reviewer distribution via neutral ZIP without .git."
+  ]
+}

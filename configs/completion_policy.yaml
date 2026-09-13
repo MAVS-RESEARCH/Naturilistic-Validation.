@@ -1,0 +1,11 @@
+phase1_sealed: true
+mode: exact
+exact_enumeration_cap: 128
+allow_sampling_for_primary_claim: false
+allow_exact_symbolic_solver: true
+positive_claim_requires_sign_invariance: true
+route_degeneracy_rule:
+  classes: [NONDEGENERATE, R-ONLY_ROUTE, SINGLE_ACTION, NO_REPAIR_SPACE]
+  classify_before_results: true
+  permit_route_degenerate_measurement: true
+  require_qualifier_for_positive_claim: true
